@@ -1,0 +1,2349 @@
+.\" Description: RFC/Internet-Draft macros
+.\" $Id: ~|^` @(#)tmac.rfc 1.47 2005/06/16 23:30:46 Bruce Lilly \ $
+.\" Report bugs to Bruce Lilly <blilly@erols.com> with subject "rfcmac"
+.\" This software is provided 'as-is', without any express or implied warranty. In
+.\" no event will the authors be held liable for any damages arising from the
+.\" use of this software.
+.\" 
+.\" Permission is granted to anyone to use this software for any purpose, including
+.\" commercial applications, and to alter it and redistribute it freely, subject
+.\" to the following restrictions:
+.\" 
+.\"     1. The origin of this software must not be misrepresented; you must not
+.\"     claim that you wrote the original software. If you use this software
+.\"     in a product, an acknowledgment in the product documentation would be
+.\"     appreciated but is not required.
+.\" 
+.\"     2. Altered source versions must be plainly marked as such, and must not
+.\"     be misrepresented as being the original software.
+.\" 
+.\"     3. This notice may not be removed or altered from any source distribution.
+.\" ######## macros for front matter not containing boilerplate ########
+.\" RFC number (>0) or Internet-Draft version (<0, -00 version is -1, -01 version is -2, etc.)
+.de NU
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro NU takes only a single argument
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro NU requires an argument (RFC number (>0) or draft version (<0))
+.el .if \\nN=0 .nr N \\$1
+.\}
+..
+.\" Title
+.de TL
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro TL takes only a single argument; whitespace must be quoted
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro TL requires an argument (Title)
+.el .ds TT \\$1
+.\}
+..
+.\" Short Title
+.de ST
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro ST takes only a single argument; whitespace must be quoted
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro ST requires an argument (short Title)
+.el .ds CH \\$1
+.\}
+..
+.\" set date: 3 numeric args: full year, month, day
+.de DT
+.if \w\\n(.z .D.
+.ie !\\n(.$=3 .tm WARNING: \\n(.F:\\n(.c: macro DT takes three arguments (year, month, day as numbers)
+.el \{ .nr Y \\$1
+.nr M \\$2
+.nr D \\$3
+.\}
+..
+.\" author information
+.\" 9 args (1. name for 1st page heading, 2. first name/initials for address, 3. last name for footer and address, 4. gender, 5. mailbox, 6. telephone, 7. fax, 8. URL, 9. affiliation)
+.\" text following macro line diverted for postal address
+.de AU
+.if \w\\n(.z .D.
+.ie !\\n(.$=9 .tm WARNING: \\n(.F:\\n(.c: macro AU takes nine arguments (name for 1st page heading, first name/initials, last name, gender, mailbox, telephone, fax, URL, affiliation)
+.el \{ .nr NA +1
+.if \\n(NA<=9 \{ .ds A\\n(NA \\$1
+.ds J\\n(NA \\$2
+.ds N\\n(NA \\$3
+.ds S\\n(NA \\$4
+.if !\\*(S\\n(NAm .if !\\*(S\\n(NAf .if !\\*(S\\n(NAo .ds S\\n(NA
+.ie \\n(E\\n(NA .ds XX ED
+.el .ds XX AU
+.if !\w\\*(S\\n(NA .tm WARNING: \\n(.F:\\n(.c: macro \\*(XX gender argument must be m, f, or o (\\$4)
+.ds M\\n(NA \\$5
+.ds T\\n(NA \\$6
+.ds F\\n(NA \\$7
+.ds U\\n(NA \\$8
+.ds C\\n(NA \\$9
+'in 0
+'nf
+.di P\\n(NA
+.\}
+.\}
+..
+.\" editor information
+.de ED
+.ie !\\n(.$=9 .tm WARNING: \\n(.F:\\n(.c: macro ED takes nine arguments (name for 1st page heading, first name/initials, last name, gender, mailbox, telephone, fax, URL, affiliation)
+.el \{ .nr XX \\n(NA+1
+.nr E\\n(XX 1
+.AU "\\$1" "\\$2" "\\$3" "\\$4" "\\$5" "\\$6" "\\$7" "\\$8" "\\$9"
+.\}
+..
+.\" base file name (Internet-draft only) [does not include version]
+.de FN
+.if \w\\n(.z .D.
+.nr FN \\n(.c
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro FN takes only a single argument (spaces are not allowed in the draft file name)
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro FN requires an argument (base file name)
+.el .ds DR \\$1
+.\}
+..
+.\" Table of Contents page count and maximum level
+.de TC
+.if \w\\n(.z .D.
+.nr TL \\n(.c-1 \" input line where number of TOC pages is set
+.ie \\n(.$>2 .tm WARNING: \\n(.F:\\n(.c: macro TC takes no more than two arguments; whitespace must be quoted
+.el \{ .ie \\n(.$<2 .tm WARNING: \\n(.F:\\n(.c: macro TC requires two arguments (number of pages for Table of Contents, maximum section level for inclusion in Table of Contents)
+.el \{ .nr C \\$1
+.nr H \\$2
+.\}
+.\}
+..
+.\" RFC Category
+.de CA
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro CA takes only a single argument; whitespace must be quoted
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro CA requires an argument (RFC Category)
+.el .ds cA \\$1
+.\" categories per RFC 2026 (individual level within Standards Track is not indicated)
+.if \\nN>=0 .if !\\*(cAInformational .if !\\*(cAStandards Track .if !\\*(cAExperimental .if !\\*(cABest Current Practice .tm document category must be one of "Standards Track", Experimental, Informational, or "Best Current Practice"
+.\}
+..
+.\" Individual submission (flag for minor tweak to boilerplate)
+.de IS
+.if \w\\n(.z .D.
+.\" draft-rfc-editor-rfc2223bis-08.txt
+.nr IS 1
+..
+.\" IESG note (RFC Editor as directed by IESG) 2 args: 1: number selecting note, 2: WG name or procedure description
+.\" special case argument 1 == zero: text following macro line is diverted for custom note
+.de IN
+.if \w\\n(.z .D.
+.if !\\n(.$ .ab ERROR: \\n(.F:\\n(.c: macro IN requires an argument (note type)
+.if \\n(.$>2 .ab ERROR: \\n(.F:\\n(.c: macro IN takes at most two arguments; whitespace must be quoted
+.if (\\$1<0):(\\$1>=9) .ab ERROR: \\n(.F:\\n(.c: macro IN: no IETF note of type \\$1 is defined
+.nr In \\$1
+.if \\n(In=0 .nr In -1
+.if (\\n(In=2):(\\n(In=3):(\\n(In=4) \{ .ie \\n(.$<2 .tm 2nd argument to IN macro (working group name) needed for type \\n(In
+.el .ds Im "\\$2
+.\}
+.\" RFC Editor/IESG defined note (diversion)
+.ie \\n(In=-1 .di I<
+.el .di X<
+..
+.\" Optional Notice
+.de ON
+.if \w\\n(.z .D.
+.nr OL \\n(.c-1 \" input line where optional notice type is set
+.\" draft-rfc-editor-rfc2223bis-08.txt
+.ie \\n(.$>2 .tm WARNING: \\n(.F:\\n(.c: macro ON takes at most two arguments; whitespace must be quoted
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro ON requires an argument (optional notice type)
+.el \{ .nr ON \\$1
+.if \\n(ON<1 .tm WARNING: \\n(.F:\\n(.c: macro ON first argument \\n(ON is not valid
+.if \\n(.$=2 .ds ES \\$2
+.\}
+.\}
+..
+.\" BCP, FYI, or STD number (set by RFC Editor)
+.\" draft-rfc-editor-rfc2223bis-08.txt
+.de AN
+.if \w\\n(.z .D.
+.ie !\\n(.$=2 .tm WARNING: \\n(.F:\\n(.c: macro AN takes two arguments (number type (BCP, FYI, or STD), and number)
+.el \{ .ie !\\$1BCP .if !\\$1FYI .if !\\$1STD .tm WARNING: \\n(.F:\\n(.c: macro AN first argument must be BCP, FYI, or STD
+.el .ds AT \\$1
+.nr AN \\$2
+.\}
+.\}
+..
+.\" RFCs updated by this memo (use once per RFC); only argument is RFC number
+.de UP
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro UP takes only a single argument (use multiple times if necessary)
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro UP requires an argument (RFC number)
+.el \{ .if \w\\*(U<>=1m .as U< ", 
+.as U< \\$1
+.\}
+.\}
+..
+.\" RFCs obsoleted by this memo (use once per RFC); only argument is RFC number
+.de OB
+.if \w\\n(.z .D.
+.ie \\n(.$>1 .tm WARNING: \\n(.F:\\n(.c: macro OB takes only a single argument (use multiple times if necessary)
+.el \{ .ie !\\n(.$ .tm WARNING: \\n(.F:\\n(.c: macro OB requires an argument (RFC number)
+.el \{ .if \w\\*(O<>=1m .as O< ", 
+.as O< \\$1
+.\}
+.\}
+..
+.\" ######## document Abstract ########
+.\" Abstract (text following macro is diverted)
+.de AB
+.if \w\\n(.z .D.
+.nr AB 1
+.di A<
+..
+.\" ######## document body ########
+.\" #### section headings ####
+.\" unnumbered sections (2 arguments: equivalent heading level (for TOC inclusion), heading text)
+.de SH
+.\" finish any outstanding diversions for Abstract, author postal address, Custom IESG Note, trash
+.if \\n(.zA< .D.
+.if \\n(.zP\\n(NA .D.
+.if \\n(.zI< .D.
+.if \\n(.zX< .D.
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IF .OF
+.if !\\n(.$=2 .tm WARNING: \\n(.F:\\n(.c: macro SH takes two arguments (equivalent heading level, heading text)
+.if \\n(IK .tm WARNING: \\n(.F:\\n(.c: headings inside keeps might not work well
+.nr IR 0
+.in 0
+.fi
+.ds SN
+.da S<
+.br
+\!.SP 1P
+\\$2
+\!.CE \\$1 1 "\\$2
+..
+.\" numbered sections (2 required arguments: heading level, heading text; 3rd optional argument: string name for section number)
+.de NH
+.\" finish any outstanding diversions for Abstract, author postal address, Custom IESG Note, trash
+.if \\n(.zA< .D.
+.if \\n(.zP\\n(NA .D.
+.if \\n(.zI< .D.
+.if \\n(.zX< .D.
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IF .OF
+.if (\\n(.$<2):(\\n(.$>3) .tm WARNING: \\n(.F:\\n(.c: macro NH requires two arguments (heading level, heading text)
+.if \\n(IK .tm WARNING: \\n(.F:\\n(.c: headings inside keeps might not work well
+.nr IR 0
+.in 0
+.fi
+.nr NS 1
+.if \\n(.$ \{ .ie \\$1 .if \\$1<=9 .nr NS \\$1
+.el .nr H1 1
+.\}
+.nr H\\n(NS +1
+.ds SN \\n(H1
+.ie \\n(NS<=1 .nr H2 0
+.el .as SN .\\n(H2
+.ie \\n(NS<=2 .nr H3 0
+.el .as SN .\\n(H3
+.ie \\n(NS<=3 .nr H4 0
+.el .as SN .\\n(H4
+.ie \\n(NS<=4 .nr H5 0
+.el .as SN .\\n(H5
+.ie \\n(NS<=5 .nr H6 0
+.el .as SN .\\n(H6
+.ie \\n(NS<=6 .nr H7 0
+.el .as SN .\\n(H7
+.ie \\n(NS<=7 .nr H8 0
+.el .as SN .\\n(H8
+.ie \\n(NS<=8 .nr H9 0
+.el .as SN .\\n(H9
+.if \\n(.$=3 \{ .ie \w\\$3=\wXX .ds \\$3 \\*(SN
+.el .tm WARNING: \\n(.F:\\n(.c: macro NH 3rd argument must be 2 characters suitable as a string name (\\$3 ignored)
+.\}
+.da S<
+\!.SP 1P
+\\*(SN. \\$2
+\!.CE \\n(NS \\n(NS "\\*(SN. \\$2
+..
+.\" #### reserve vertical space ####
+.\" need space
+.de NS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.ne \\$1P
+..
+.\" #### paragraphs ####
+.\" indented paragraph
+.de IP
+.nr XY 0
+.if \\n(.zA< .nr XY 1
+.if \\n(.zK< .nr XY 1
+.ie \\n(XY \{ .br
+\!.IP "\\$1" \\$2
+.\}
+.el \{\
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.fi
+.di P<
+.nr IP \\n(IR
+.if \\n(IR<9 \{ .nr IR +1
+.ie \\n(.$-1 .nr I\\n(IR \\n(I\\n(IPu+\\$2m
+.el .nr I\\n(IR \\n(I\\n(IPu+\\nIu \" RFC 2223, draft-rfc-editor-rfc2223bis-08.txt
+.\}
+.in \\n(I\\n(IRu
+.nr XY \\n(I\\n(IRu-\\n(I\\n(IPu
+\!.SP \\nSu
+.if \\n(.$>0 \{\
+.ti -\\n(XYu
+\!.ti -\\n(XYu
+.ie \w\\$1>=\\n(XYu \&\\$1
+.el \{ .ta \\n(XYu
+\!.ta \\n(XYu
+\&\\$1\t\c
+.\}
+.\}
+.\}
+..
+.\" left aligned (block) paragraph
+.de LP
+.nr XY 0
+.if \\n(.zA< .nr XY 1
+.if \\n(.zK< .nr XY 1
+.ie \\n(XY \{ .br
+\!.LP
+.\}
+.el \{\
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.fi
+.nr IP \\n(IR
+.di P<
+\!.SP \\nSu
+.\}
+..
+.\" #### indentation ####
+.\" increase indent
+.de RS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.fi
+.if \\n(IR<9 \{ .nr IR +1
+.nr I\\n(IR \\n(.iu+\\nIu
+.in \\n(I\\n(IRu
+.\}
+..
+.\" decrease indent
+.de RE
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.fi
+.if \\n(IR>0 \{ .nr IR -1
+.in \\n(I\\n(IRu
+.\}
+..
+.\" #### references ####
+.\" automatically-numbered informative reference start
+.de IR
+.nr IN +1
+.ie \\n(.$&\w\\$1 .ds RN [I\\n(IN.\\$1]
+.el .ds RN [I\\n(IN]
+.if \\n(.$=2 \{ .ie \w\\$2=\wXX .ds \\$2 \\*(RN
+.el .tm WARNING: \\n(.F:\\n(.c: macro IR 2nd argument must be 2 characters suitable as a string name (\\$2 ignored)
+.\}
+.nr RL \w\\*(RN\0
+.if \\n(RL>\\n(IL .nr IL \\n(RL
+.ev 1
+.nf
+.in 0
+.da IM
+\!.IP "\\*(RN" \\\\n(ILu
+\!.if \\*(.Tps \Xps: exec [/Dest (I\\n(IN) /DEST pdfmark\\c
+..
+.\" automatically-numbered informative reference end
+.de IE
+.D.
+.ev
+\\*(RN\\c
+.\" temporary indent and line filling screw up these values
+.\" .nr XW (\\n(.o+\\n(.iu+\\n(.ku-\\n(RLu)/1p
+.\" .nr XX (\\nTu+\\n(nlu+\\n(.hu-1P)/1p
+.\" .nr XY (\\n(.o+\\n(.iu+\\n(.ku)/1p
+.\" .nr XZ (\\nTu+\\n(nlu+\\n(.hu)/1p
+.\" .if \\*(.Tps \Xps: exec [/Rect [ \\n(XW \\n(XX \\n(XY \\n(XZ ] /Dest (I\\n(IN) /Subtype /Link /ANN pdfmark\\c
+..
+.\" automatically-numbered normative reference start
+.de NR
+.nr NN +1
+.ie \\n(.$&\w\\$1 .ds RN [N\\n(NN.\\$1]
+.el .ds RN [N\\n(NN]
+.if \\n(.$=2 \{ .ie \w\\$2=\wXX .ds \\$2 \\*(RN
+.el .tm WARNING: \\n(.F:\\n(.c: macro NR 2nd argument must be 2 characters suitable as a string name (\\$2 ignored)
+.\}
+.nr RL \w\\*(RN\0
+.if \\n(RL>\\n(NL .nr NL \\n(RL
+.ev 1
+.nf
+.in 0
+.da NM
+\!.IP "\\*(RN" \\\\n(NLu
+\!.if \\*(.Tps \Xps: exec [/Dest (N\\n(NN) /DEST pdfmark\\c
+..
+.\" automatically-numbered normative reference end
+.de NE
+.D.
+.ev
+\\*(RN\\c
+.\" temporary indent and line filling screw up these values
+.\" .nr XW (\\n(.o+\\n(.iu+\\n(.ku-\\n(RLu)/1p
+.\" .nr XX (\\nTu+\\n(nlu+\\n(.hu-1P)/1p
+.\" .nr XY (\\n(.o+\\n(.iu+\\n(.ku)/1p
+.\" .nr XZ (\\nTu+\\n(nlu+\\n(.hu)/1p
+.\" .if \\*(.Tps \Xps: exec [/Rect [ \\n(XW \\n(XX \\n(XY \\n(XZ ] /Dest (N\\n(NN) /Subtype /Link /ANN pdfmark\\c
+..
+.\" #### displays ####
+.\" Displays; 1+ arguments, first is type:  B center as block, C = center lines, I = indent, L = left-adjust
+.de DS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.nr ID 1
+.KS
+\!.SP 1P
+.\\$1D \\$2 \\$1
+..
+.\" floating displays
+.de DF
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.nr ID 1
+.KF
+\!.SP 1P
+.\\$1D \\$2 \\$1
+..
+.\" DE - display end
+.de DE
+.ce 0
+.if \\n(BD>0 \{ .di
+.if \\n(dl>\\n(BD .nr BD \\n(dl
+.if \\n(BD<\\n(.l .in (\\n(.lu-\\n(BDu)/2u
+.nr EI \\n(.l-\\n(.i
+.ta \\n(EIuR
+.D<
+.in \\n(OIu
+.\}
+.nr BD 0
+.in \\n(OIu
+.KE
+.nr ID 0
+.fi
+..
+.\" #### keeps ####
+.\" keep start
+.de KS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IK=0 \{ .br
+.nr KI \\n(.i
+.ev 2
+.br
+.nh
+.in \\n(KIu
+.ll \\nLu
+.lt \\n(LTu
+.di K<
+.\}
+.nr IK +1
+..
+.\" floating keep start
+.de KF
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IF \{ .tm WARNING: \\n(.F:\\n(.c: KF encountered while floating keep active: first floating keep output now
+.OF
+.\}
+'br
+.nr KI \\n(.i
+.ev 2
+.br
+.nh
+.in \\n(KIu
+.ll \\nLu
+.lt \\n(LTu
+.nr IK +1
+.nr IF 1
+.di F<
+..
+.\" keep end
+.de KE
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if (\\n(IK=1):(\\n(IF=1) \{ .br
+.di
+.ev
+.nf
+.in 0
+.nr PH \\n(dnu/1P
+.if \\n(ID=1 \{ .ie \\n(HH .nr HH +1
+.el .nr SH +1
+.\}
+.if \\n(IF=1 \{ .nr FH \\n(PH+\\n(SH
+.nr PH 0
+.\}
+.nr TD \\n(.tu/1P
+.if (\\n(IK=1)&(\\n(SH+\\n(HH+\\n(PH>\\n(TD) .bp
+.S< \" in case of .SH or .NH followed by .DS, .DF, .KS, or .KF
+.br
+.di S<
+.di
+.nr SH 0
+.nr HH 0
+.nr PH 0
+.nf
+.in 0
+.br
+.ev 2
+.K<
+.rm K<
+.ev
+.\}
+.if \\n(IK .nr IK -1
+.if !\\n(.zF< .if (\\n(IF=1)&(\\n(FH<=\\n(TD) .OF
+..
+.\" #### lists ####
+.\" numbered list
+.de NL \" prefix format suffix
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.nr L# +1
+.ds Y\\n(L#
+.nr L\\n(L# 0
+.af L\\n(L# 1
+.ds Z\\n(L# .
+.if \\n(.$>0 .if \w\\$1 .ds Y\\n(L# \\$1
+.if \\n(.$>1 .if \w\\$2 .af L\\n(L# \\$2
+.if \\n(.$>2 .if \w\\$3 .ds Z\\n(L# \\$3
+.ie \\n(.$>3 .nr M\\n(L# \\$4m
+.el .nr M\\n(L# \\nIu
+.ie \\n(.zK< \!.RS
+.el .RS
+..
+.\" list item
+.de LI
+.if \\n(.zP< .EP
+.ds LG \\g(L\\n(L#
+.af L\\n(L# 1
+.if \\n(L\\n(L#>=0 .nr L\\n(L# +1
+.ds LS "\\*(B\\n(L#
+.if \\n(L\\n(L#=-2 .if \\n(.$ .ds LS \\$1
+.ie \\n(L\\n(L#>0 \{ .af L\\n(L# \\*(LG
+.ds LS "\\*(Y\\n(L#\\n(L\\n(L#\\*(Z\\n(L#
+.\}
+.el .af L\\n(L# \\*(LG
+.nr XY \\n(M\\n(L#u/0.1i
+.IP "\\*(LS" \\n(XY
+..
+.\" list end
+.de LE
+.if \\n(.zP< .EP
+.nr L# -1
+.RE
+..
+.\" bullet list
+.de BL
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.nr L# +1
+.ie \\n(.$ .ds B\\n(L# \\$1
+.el .ds B\\n(L# \(bu
+.nr L\\n(L# 0-1
+.nr M\\n(L# \w\\*(B\\n(L#\0
+.ie \\n(.zK< \!.RS
+.el .RS
+..
+.\" variable list
+.de VL
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.nr L# +1
+.nr L\\n(L# 0-2
+.ie \\n(.$ .nr M\\n(L# \\$1m
+.el .nr M\\n(L# \\nIu
+.ie \\n(.zK< \!.RS
+.el .RS
+..
+.\" #### MIB or MIB-like copyright notice ####
+.\" MIB/PIB copyright notice
+.de IB
+.if !\\n(.$ .tm ERROR: \\n(.F:\\n(.c: macro IB requires at least one argument (MIB/PIB/module copyright type)
+.if \\$1<1 .tm WARNING: \\n).F:\\n(.c: macro IB argument 1 (\\$1) < 1 ignored
+.if \\$1>2 .tm WARNING: \\n).F:\\n(.c: macro IB argument 1 (\\$1) > 2 ignored
+.ie (\\n(.$>1)&(\w\\$2>=\w0) .ds MT \\$2
+.el .ds MT "MIB module
+.ie \w\\*(ES .if !\\*(ES\\*(SN .tm WARNING: \\n(.F:\\n(.c: macro IB in section \\*(SN vs. copyright reference to section \\*(ES
+.el .tm WARNING: \\n(.F:\\n(.c: macro IB in section \\*(SN but no reference to extraction in copyright notice
+.ie (\\n(.$>2)&(\w\\$3>=\wx) .ds XX "\&\\$3
+.el .ds XX \&
+.ie (\\n(.$>3)&(\w\\$4>=\wx) .nr XX \\$4m
+.el .nr XX \\nIu
+.nr XY \\n(XXu/0.1i
+.if \\$1=1 \{ .IP "\\*(XX" \\n(XY
+.\" RFC 3978 a.k.a. BCP 78
+Copyright\0\0\(co\0\0The Internet Society (\\*(YR).
+This version of this \\*(MT is part of RFC
+.ie \\nN<=0 XXXX;
+.el \\nN;
+see the RFC itself for full legal notices.\c
+.ie (\\n(.$>4)&(\w\\$5>=\wx) \&\\$5
+.el \&
+.\}
+.if \\$1=2 \{ .IP "\\*(XX" \\n(XXu/0.1i
+.\" RFC 3978 a.k.a. BCP 78
+Copyright\0\0\(co\0\0The Internet Society (\\*(YR).
+The initial version of this \\*(MT was published in RFC
+.ie \\nN<=0 XXXX;
+.el \\nN;
+for full legal notices see the RFC itself.
+Supplementary information may be available on
+http://www.ietf.org/copyrights/ianamib.html.\c
+.ie (\\n(.$>4)&(\w\\$5>=\wx) \&\\$5
+.el \&
+.\}
+..
+.\" #### preprocessor support ####
+.\" ## equations ##
+.\" EQ/EN for equations
+.de EQ 
+.nr EF \\n(.u
+.nr LE 1
+.ds EL \\$1
+.if \\$1L \{ .ds EL \\$2
+.nr LE 0
+.\}
+.if \\$1C .ds EL \\$2
+.if \\$1I \{ .nr LE 0
+.ds EE \\h|\\nIu
+.if \w\\$3 .ds EE \\h\\$3
+.ds EL \\$2
+.\}
+.\}
+.if \\n% .nf
+.di E<
+..
+.de EN
+.br
+.di
+.rm E<
+.nr EH \\n(dnu/1P
+.if \\n(EH=0 .if \w\\*(EL .nr EH 1
+.if \\n(EH>0 \{ .ie \w\\n(.z \!.SP 1P
+.el .SP 1P
+.\}
+.\" avoid trouble with percent
+.pc
+.if \\n(BD>0 .nr LE 0
+.if \\n(MK>0 \{ .if \\n(LE=1 .ds EE \\h|\\nIu
+.nr LE 0
+.\}
+.if \\n(EH>0 \{ .ie \\n(EP=0 \{\
+.ie \\n(LE>0 .tl \\*(10\\*(EL
+.el .if \\n(LE=0 \{ .if \\n(BD=0 .tl \\*(EE\\*(10\\*(EL
+.if \\n(BD>0 .if \\n(BD<\\w\\*(10 .nr BD \\w\\*(10
+.if \\n(BD>0 \!\\*(10\\t\\*(EL
+.\}
+.\}
+.el .if \\n(EP>0 \{\
+.ie \\n(LE>0 .tl \\*(EL\\*(10
+.el .if \\n(LE=0 \{ .if \\n(BD=0 .tl \\*(EL\\*(EE\\*(10
+.if \\n(BD>0 .if \\n(BD<\\w\\*(10 .nr BD \\w\\*(10
+.if \\n(BD>0 \!\\h-\\\\n(.iu\\*(EL\\h|0\\*(10
+.\}
+.\}
+.\}
+.pc %
+.if \\n(EF 'fi
+.rm EL 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+.rr 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+.if \\n(EH>0 \{ .ie \w\\n(.z \!.SP 1P
+.el .SP 1P
+.\}
+..
+.\" ## tables ##
+.\" table macros .TS [H], .TH [N], .TE for tables
+.\" table start (optional arg H for table with repeatable heading)
+.de TS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.SP \\nSu
+.nr Ti \\n(.iu
+.if \\n(Tiu<\\nIu .nr Ti \\nIu
+.ev 1	\" set new environment for table; avoid tbl polluting page environment
+.in \\n(Tiu
+.ll \\nLu
+.ie \\$1H \{'ne 5P
+.nr TH 1	\" .TS H
+.if \\n(ID=1 .tm WARNING: \\n(.F line \\n(.c: .TS H within .DS
+.ie n .wh 2P H<	\" 2P page trap after new page heading
+.el .wh 2P+\\nTu H<
+.di T<\}
+.el .nr TH 0	\" not .TS H
+..
+.\" marked end of table heading
+.de TH
+.di
+.nr TH 0
+.ev 2	\" new environment for interpolating formatted heading
+.in 0	\" zero indent for interpolating formatted diversion
+.ll \\nLu
+.nf
+.ie \\$1N .if !\\n(TN .T<	\" interpolate heading if .TH N and 1st table on page
+.el .T<	\"			or if no N arg
+.br
+.ll
+.in
+.fi
+.ev
+.nr IT 1	\" in table (with heading)
+..
+.\" repeat table heading via page trap
+.de H<
+.if \\n(IT \{.ev 2
+.nr TN 0
+.in 0
+.ch H< 1P	\" avoid retriggering page trap
+.sp |2P		\" ensure correct position
+.if t .sp \\nTu
+.nf
+.T<
+.ie n .ch H< 2P	\" restore page trap
+.el .ch H< 2P+\\nTu
+.in
+.fi
+.ev\}
+..
+.\" table end
+.de TE
+.if \\n(TH \{.tm WARNING: \\n(.F line \\n(.c: .TS H without .TH
+.di\}
+.rm T<
+.nr IT 0
+.nr TN 1
+.in
+.ll
+.ev
+.EV 1 \" clean up environment
+.EV 2
+.SP \\nSu
+..
+.\" ## ABNF ##
+.\" check for unformatted ABNF
+.de AS
+.tm WARNING: \\n(.F:\\n(.c: did you forget to use the ABNF formatter?
+.DS I \\$1
+..
+.de AE
+.DE
+..
+.\" ## diagrams ##
+.\" PS/PE for pic
+.de PS
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.ie \\n(.$<2 .tm WARNING: \\n(.F:\\n(.c: make sure pic has been used
+.el \{ .ie \w\\n(.z \!.SP 1P
+.el .SP 1P
+.\}
+.if \\n(ID=0 .tm WARNING: \\n(.F:\\n(.c: it is recommended to wrap pictures in a display (.DS/.DE)
+..
+.de PE
+.ie \w\\n(.z \!.SP 1P
+.el .SP 1P
+..
+.\" ######## Appendices ########
+.\" Appendix
+.de AP
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IF .OF
+.if (\\n(.$<1):(\\n(.$>2) .tm WARNING: \\n(.F:\\n(.c: macro AP requires an argument (heading text)
+.if \\n(IK .tm WARNING: \\n(.F:\\n(.c: Appendix headings inside keeps might not work well
+.ie !\\g(H1A \{ .nr H1 1
+.af H1 A
+.\}
+.el .nr H1 +1
+.nr H2 0
+.nr H3 0
+.nr H4 0
+.nr H5 0
+.nr H6 0
+.nr H7 0
+.nr H8 0
+.nr H9 0
+.nr NS 1
+.nr IR 0
+.in 0
+.fi
+.ds SN "\\n(H1
+.if \\n(.$=2 \{ .ie \w\\$2=\wXX .ds \\$2 \\*(SN
+.el .tm WARNING: \\n(.F:\\n(.c: macro AP 2nd argument must be 2 characters suitable as a string name (\\$2 ignored)
+.\}
+.da S<
+\!.SP 1P
+Appendix \\*(SN. \\$1
+\!.CE \\n(NS \\n(NS "Appendix \\*(SN. \\$1
+..
+.\" ######## end matter ########
+.\" end-of-document processing (has boilerplate)
+.de EM
+.if \\n(.zP< .EP
+.if \\n(.zS< .EH
+.if \\n(IF .OF
+.\" more sanity checking
+.if \w\\*(ES .if !\w\\*(MT .tm WARNING: \\n(.F:\\n(.c: reference to extraction of section \\*(ES, but no copyright notice in that section (macro IB missing?)
+.br
+.nr NS 1
+.nr IR 0
+.in 0
+.if \\n(NN \{ .ie \\n(NN>1 .SH 0 "Normative References
+.el .SH 0 "Normative Reference
+.RS
+.NM
+.br
+.RE
+.\}
+.in 0
+.if \\n(IN \{ .ie \\n(IN>1 .SH 0 "Informative References
+.el .SH 0 "Informative Reference
+.RS
+.IM
+.br
+.RE
+.\}
+.\" author's address
+.\" # non-editor authors
+.nr XX \\n(NA-\\n(NE
+.ds Aa
+.ie \\n(NE>1 .ds Aa Editors'
+.el .if \\n(NE .ds Aa Editor's
+.if (\\n(NE>0)&(\\n(XX>0) .as Aa " and 
+.ie \\n(XX>1 .as Aa Authors'
+.el .if \\n(XX .as Aa Author's
+.as Aa " Address
+.if \\n(NA>1 .as Aa es
+.AA 1
+.if \w\\*(A2 .AA 2
+.if \w\\*(A3 .AA 3
+.if \w\\*(A4 .AA 4
+.if \w\\*(A5 .AA 5
+.if \w\\*(A6 .AA 6
+.if \w\\*(A7 .AA 7
+.if \w\\*(A8 .AA 8
+.if \w\\*(A9 .AA 9
+.rm AM
+.fi
+.br
+.\" end-of-document boilerplate
+.\" Full Copyright Statement
+.SH 10 "Full Copyright Statement
+.IP
+.\" RFC 3978, possibly modified according to author number
+Copyright\0\0\(co\0\0The Internet Society (\\*(YR).
+.IP
+This document
+is subject to
+the rights,
+licenses and restrictions
+contained in BCP\ 78\c
+.if \\n(IS \& and at www.rfc\-editor.org\c
+, and except as set forth therein,
+the
+\\*(AR
+rights.
+.IP
+.\" RFC 3978
+This document
+and the information contained herein
+are provided
+on an "AS IS" basis
+and THE CONTRIBUTOR,
+THE ORGANIZATION
+\\*(HS
+REPRESENTS
+OR IS SPONSORED BY (IF ANY),
+THE INTERNET SOCIETY
+AND
+THE INTERNET ENGINEERING TASK FORCE
+DISCLAIM ALL WARRANTIES,
+EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO
+ANY WARRANTY
+THAT THE USE OF
+THE INFORMATION HEREIN
+WILL NOT INFRINGE
+ANY RIGHTS
+OR ANY IMPLIED WARRANTIES
+OF MERCHANTABILITY
+OR FITNESS
+FOR A PARTICULAR PURPOSE.
+.\" Intellectual Property Statement
+.SH 10 "Intellectual Property Statement
+.IP
+.\" RFC 3979
+The IETF takes no position
+regarding the validity or scope
+of any
+Intellectual Property Rights
+or other rights
+that might be claimed
+to pertain to
+the implementation or use of
+the technology
+described in
+this document
+or the extent to which
+any license
+under such rights
+might or might not
+be available;
+nor does it represent
+that it has made
+any independent effort
+to identify
+any such rights.
+Information on
+the procedures
+with respect to rights
+in RFC documents
+can be found in
+BCP\ 78 and BCP\ 79.
+.IP
+.\" RFC 3979
+Copies of
+IPR disclosures
+made to the IETF Secretariat
+and any assurances of licenses
+to be made available,
+or the result of
+an attempt made
+to obtain
+a general license
+or permission for
+the use of such proprietary rights
+by implementers
+or users
+of this specification
+can be obtained from
+the IETF on\-line IPR repository
+at http://www.ietf.org/ipr.
+.IP
+.\" RFC 3979
+The IETF
+invites any interested party
+to bring to its attention
+any copyrights,
+patents or patent applications,
+or other proprietary rights
+that may cover technology
+that may be required
+to implement
+this standard.
+Please address
+the information
+to the IETF
+at ietf\-ipr@ietf.org.
+.SH 10 "Acknowledgment
+.IP
+.\" rfc-editor boilerplate.txt [section heading spelling inconsistency corrected]
+Funding for
+the RFC Editor function
+is currently provided by
+the Internet Society.
+.EP
+.\" output TOC here
+.\" 15 page limit per ID-Checklist Revision 1.2
+.if \\n(LP>15 .if \\nC<=0 .tm WARNING: \\n(.F:\\n(.c: set number of pages for Table of Contents (ca. line \\n(TL)
+.if \\n(LP>15:\\nC>0 \{ .nr IC 1
+.bp
+.in 0
+Table of Contents
+.in 0.3i
+.SP 1P
+'nf
+.lc .
+.ta (u;\\n(.l-\\n(.i-\w0\\n(LP) (u;\\n(.l-\\n(.i)R
+.C<
+.\}
+.br
+..
+.\" ######## internal macros ########
+.\" first page heading (has boilerplate)
+.de P0
+.RT
+.\" page 1 heading
+.\" first line: "Network Working Group", primary author or editor
+.\" RFC 2223, draft-rfc-editor-rfc2223bis-08.txt
+.ie \\n(E1 .ds XX ", Editor
+.el .ds XX
+.tl Network Working Group\\*(A1\\*(XX
+.\" second line: RFC Number or Internet-Draft on left
+.\" RFC 2223, draft-rfc-editor-rfc2223bis-08.txt
+.if \\nN=0 .ds L2 Request for Comments: XXXX
+.if \\nN>0 .ds L2 Request for Comments: \\nN
+.if \\nN<0 .ds L2 Internet\-Draft
+.\" primary author affiliation, secondary author, or date on right
+.ds R2
+.ie \\n(E2 .ds XX ", Editor
+.el .ds XX
+.if \w\\*(C1 .if !\\*(C1\\*(C2 .ds R2 \\*(C1
+.if !\w\\*(R2 .if \w\\*(A2 .ds R2 \\*(A2\\*(XX
+.if !\w\\*(R2 .ds R2 \\*(RH
+.tl \\*(L2\\*(R2
+.\" third line: alternate type & number, updated/obsoleted RFCs, category, or expiration on left
+.ds L3
+.if \\n(AN .if \w\\*(AT .ds L3 \\*(AT: \\n(AN
+.if !\w\\*(L3 .if \w\\*(U< .ds L3 Updates: \\*(U<
+.if !\w\\*(L3 .if \w\\*(O< .ds L3 Obsoletes: \\*(O<
+.if \w\\*(L3 .if \\nN<=0 .as L3 " (if approved)
+.if !\w\\*(L3 .if \\nN>=0 .ds L3 Category: \\*(cA
+.if !\w\\*(L3 .if \w\\*(cA .ds L3 Intended status: \\*(cA
+.if !\w\\*(L3 .if \\nN<0 .ds L3 Expires: \\*(EX
+.\" second author, second author's affiliation, third author, or date on right
+.ds R3
+.if \\*(R2\\*(C1 .if \w\\*(A2 .ds R3 \\*(A2\\*(XX
+.if \\*(R2\\*(A2\\*(XX .if !\\*(C2\\*(C3 .if \w\\*(C2 .ds R3 \\*(C2
+.ie \\n(E3 .ds XX ", Editor
+.el .ds XX
+.if !\w\\*(R3 .if \\*(R2\\*(A2\\*(XX .if \w\\*(A3 .ds R3 \\*(A3\\*(XX
+.if !\w\\*(R3 .ds R3 \\*(RH
+.if \\*(R2\\*(R3 .ds R3 ~
+.if \w\\*(L3 .if !\\*(R3~ .tl \\*(L3\\*(R3
+.if \w\\*(L3 .if \\*(R3~ .tl \\*(L3
+.if !\w\\*(L3 .if !\\*(R3~ .tl \\*(R3
+.\" etc. until there's no more heading information to print
+.ds L4 ~
+.if \w\\*(U< .ds L4 Updates: \\*(U<
+.if \\*(L4~ .if \w\\*(O< .ds L4 Obsoletes: \\*(O<
+.if !\\*(L4~ .if \\nN<=0 .as L4 " (if approved)
+.if \\*(L3\\*(L4 .ds L4 ~
+.if \\*(L4~ .if \\nN>=0 .ds L4 Category: \\*(cA
+.if \\*(L4~ .if \w\\*(cA .ds L4 Intended status: \\*(cA
+.if \\*(L4~ .if \\nN<0 .ds L4 Expires: \\*(EX
+.if \\*(L3\\*(L4 .ds L4 ~
+.ds R4
+.if \\*(R3\\*(A2\\*(XX .if !\\*(C2\\*(C3 .if \w\\*(C2 .ds R4 \\*(C2
+.if !\w\\*(R4 .if \\*(R3\\*(A2\\*(XX .if \w\\*(A3 .ds R4 \\*(A3\\*(XX
+.if \\*(R3\\*(C2 .if \w\\*(A3 .ds R4 \\*(A3\\*(XX
+.if \\*(R3\\*(A3\\*(XX .if !\\*(C3\\*(C4 .if \w\\*(C3 .ds R4 \\*(C3
+.ie \\n(E4 .ds XX ", Editor
+.el .ds XX
+.if !\w\\*(R4 .if \\*(R3\\*(A3\\*(XX .if \w\\*(A4 .ds R4 \\*(A4\\*(XX
+.if !\w\\*(R4 .ds R4 \\*(RH
+.if \\*(R2\\*(R4 .ds R4 ~
+.if \\*(R3\\*(R4 .ds R4 ~
+.if !\\*(L4~ .if !\\*(R4~ .tl \\*(L4\\*(R4
+.if !\\*(L4~ .if \\*(R4~ .tl \\*(L4
+.if \\*(L4~ .if !\\*(R4~ .tl \\*(R4
+.ds L5 ~
+.if \w\\*(O< .ds L5 Obsoletes: \\*(O<
+.if \\*(L4\\*(L5 .ds L5 ~
+.if \\*(L5~ .if \\nN>=0 .ds L5 Category: \\*(cA
+.if \\*(L5~ .if \w\\*(cA .ds L5 Intended status: \\*(cA
+.if \\*(L5~ .if \\nN<0 .ds L5 Expires: \\*(EX
+.if \\*(L4\\*(L5 .ds L5 ~
+.if \\*(L3\\*(L5 .ds L5 ~
+.ds R5
+.if \\*(R4\\*(C2 .if \w\\*(A3 .ds R5 \\*(A3\\*(XX
+.if \\*(R4\\*(A3\\*(XX .if !\\*(C3\\*(C4 .if \w\\*(C3 .ds R5 \\*(C3
+.if \\*(R4\\*(C3 .if \w\\*(A4 .ds R5 \\*(A4\\*(XX
+.if \\*(R4\\*(A4\\*(XX .if !\\*(C4\\*(C5 .if \w\\*(C4 .ds R5 \\*(C4
+.ie \\n(E5 .ds XX ", Editor
+.el .ds XX
+.if !\w\\*(R5 .if \\*(R4\\*(A4\\*(XX .if \w\\*(A5 .ds R5 \\*(A5\\*(XX
+.if !\w\\*(R5 .ds R5 \\*(RH
+.if \\*(R2\\*(R5 .ds R5 ~
+.if \\*(R3\\*(R5 .ds R5 ~
+.if \\*(R4\\*(R5 .ds R5 ~
+.if !\\*(L5~ .if !\\*(R5~ .tl \\*(L5\\*(R5
+.if !\\*(L5~ .if \\*(R5~ .tl \\*(L5
+.if \\*(L5~ .if !\\*(R5~ .tl \\*(R5
+.ds L6 ~
+.if \\nN>=0 .ds L6 Category: \\*(cA
+.if \\*(L6~ .if \w\\*(cA .ds L6 Intended status: \\*(cA
+.if \\*(L5\\*(L6 .ds L6 ~
+.if \\*(L4\\*(L6 .ds L6 ~
+.if \\*(L3\\*(L6 .ds L6 ~
+.if \\*(L6~ .if \\nN<0 .ds L6 Expires: \\*(EX
+.if \\*(L5\\*(L6 .ds L6 ~
+.if \\*(L4\\*(L6 .ds L6 ~
+.if \\*(L3\\*(L6 .ds L6 ~
+.ds R6
+.if \\*(R5\\*(A3 .if !\\*(C3\\*(C4 .if \w\\*(C3 .ds R6 \\*(C3
+.if \\*(R5\\*(C3 .if \w\\*(A4 .ds R6 \\*(A4\\*(XX
+.if \\*(R5\\*(A4\\*(XX .if !\\*(C4\\*(C5 .if \w\\*(C4 .ds R6 \\*(C4
+.if \\*(R5\\*(C4 .if \w\\*(A5 .ds R6 \\*(A5\\*(XX
+.if \\*(R5\\*(A5 .if \w\\*(C5 .ds R6 \\*(C5
+.if !\w\\*(R6 .ds R6 \\*(RH
+.if \\*(R2\\*(R6 .ds R6 ~
+.if \\*(R3\\*(R6 .ds R6 ~
+.if \\*(R4\\*(R6 .ds R6 ~
+.if \\*(R5\\*(R6 .ds R6 ~
+.if !\\*(L6~ .if !\\*(R6~ .tl \\*(L6\\*(R6
+.if !\\*(L6~ .if \\*(R6~ .tl \\*(L6
+.if \\*(L6~ .if !\\*(R6~ .tl \\*(R6
+.ds L7 ~
+.if \\nN>=0 .ds L7 Category: \\*(cA
+.if \\*(L7~ .if \w\\*(cA .ds L7 Intended status: \\*(cA
+.if \\*(L6\\*(L7 .ds L7 ~
+.if \\*(L5\\*(L7 .ds L7 ~
+.if \\*(L4\\*(L7 .ds L7 ~
+.if \\*(L3\\*(L7 .ds L7 ~
+.if \\*(L6~ .if \\nN<0 .ds L6 Expires: \\*(EX
+.if \\*(L6\\*(L7 .ds L7 ~
+.if \\*(L5\\*(L7 .ds L7 ~
+.if \\*(L4\\*(L7 .ds L7 ~
+.if \\*(L3\\*(L7 .ds L7 ~
+.ds R7
+.if \\*(R6\\*(C3 .if \w\\*(A4 .ds R7 \\*(A4\\*(XX
+.if \\*(R6\\*(A4\\*(XX .if !\\*(C4\\*(C5 .if \w\\*(C4 .ds R7 \\*(C4
+.if \\*(R6\\*(C4 .if \w\\*(A5 .ds R7 \\*(A5\\*(XX
+.if \\*(R6\\*(A5\\*(XX .if \w\\*(C5 .ds R7 \\*(C5
+.if !\w\\*(R7 .ds R7 \\*(RH
+.if \\*(R2\\*(R7 .ds R7 ~
+.if \\*(R3\\*(R7 .ds R7 ~
+.if \\*(R4\\*(R7 .ds R7 ~
+.if \\*(R5\\*(R7 .ds R7 ~
+.if \\*(R6\\*(R7 .ds R7 ~
+.if !\\*(L7~ .if !\\*(R7~ .tl \\*(L7\\*(R7
+.if !\\*(L7~ .if \\*(R7~ .tl \\*(L7
+.if \\*(L7~ .if !\\*(R7~ .tl \\*(R7
+.ds R8
+.if \\*(R7\\*(A4 .if !\\*(C4\\*(C5 .if \w\\*(C4 .ds R8 \\*(C4
+.if \\*(R7\\*(C4 .if \w\\*(A5 .ds R8 \\*(A5\\*(XX
+.if \\*(R7\\*(A5\\*(XX .if \w\\*(C5 .ds R8 \\*(C5
+.if !\w\\*(R8 .ds R8 \\*(RH
+.if \\*(R2\\*(R8 .ds R8 ~
+.if \\*(R3\\*(R8 .ds R8 ~
+.if \\*(R4\\*(R8 .ds R8 ~
+.if \\*(R5\\*(R8 .ds R8 ~
+.if \\*(R6\\*(R8 .ds R8 ~
+.if \\*(R7\\*(R8 .ds R8 ~
+.if !\\*(R8~ .tl \\*(R8
+.ds R9
+.if \\*(R8\\*(C4 .if \w\\*(A5 .ds R9 \\*(A5\\*(XX
+.if \\*(R8\\*(A5\\*(XX .if \w\\*(C5 .ds R9 \\*(C5
+.if !\w\\*(R9 .ds R9 \\*(RH
+.if \\*(R2\\*(R9 .ds R9 ~
+.if \\*(R3\\*(R9 .ds R9 ~
+.if \\*(R4\\*(R9 .ds R9 ~
+.if \\*(R5\\*(R9 .ds R9 ~
+.if \\*(R6\\*(R9 .ds R9 ~
+.if \\*(R7\\*(R9 .ds R9 ~
+.if \\*(R8\\*(R9 .ds R9 ~
+.if !\\*(R9~ .tl \\*(R9
+.ds R0
+.if \\*(R9\\*(A5\\*(XX .if \w\\*(C5 .ds R0 \\*(C5
+.if !\w\\*(R0 .ds R0 \\*(RH
+.if \\*(R2\\*(R0 .ds R0 ~
+.if \\*(R3\\*(R0 .ds R0 ~
+.if \\*(R4\\*(R0 .ds R0 ~
+.if \\*(R5\\*(R0 .ds R0 ~
+.if \\*(R6\\*(R0 .ds R0 ~
+.if \\*(R7\\*(R0 .ds R0 ~
+.if \\*(R8\\*(R0 .ds R0 ~
+.if \\*(R9\\*(R0 .ds R0 ~
+.if !\\*(R0~ .tl \\*(R0
+.ds R1 \\*(RH
+.if \\*(R2\\*(R1 .ds R1 ~
+.if \\*(R3\\*(R1 .ds R1 ~
+.if \\*(R4\\*(R1 .ds R1 ~
+.if \\*(R5\\*(R1 .ds R1 ~
+.if \\*(R6\\*(R1 .ds R1 ~
+.if \\*(R7\\*(R1 .ds R1 ~
+.if \\*(R8\\*(R1 .ds R1 ~
+.if \\*(R9\\*(R1 .ds R1 ~
+.if \\*(R0\\*(R1 .ds R1 ~
+.if !\\*(R1~ .tl \\*(R1
+.br
+.\" title and draft file name
+.\" put title into a diversion with shortened line length, breaking into lines if necessary
+.di B<
+.\" set line length for title with margin each side same as paragraph indent (an aesthetic choice)
+.ll \\nLu-\\nIu-\\nIu
+\\*(TT
+.br
+.ll
+.di
+.\" center title
+.DS C
+.in 0
+.B<
+.if \\*(.Tps \Xps: exec [/Author (\\*(A1) /Title (\\*(TT) /DOCINFO pdfmark\c
+.\" internet-draft file name
+.if \\nN<0 \\*(dr
+.in
+.DE
+.\" unnumbered status section (not in table of contents)
+.\" RFC 2223, draft-rfc-editor-rfc2223bis-08.txt
+.SH 10 "Status of this Memo
+.\" status boilerplate
+.IP
+.if \\nN<0 \{\
+.\" RFC 3978
+By submitting this
+Internet\-Draft,
+\\*(ET
+author
+represents that
+any applicable
+patent or other IPR claims
+of which
+\\*(HO
+is aware
+have been
+or will be
+disclosed,
+and any
+of which
+\\*(HO
+.ie \\n(NA=1 becomes
+.el become
+aware
+will be disclosed,
+in accordance with
+Section 6 of
+BCP\ 79.
+.if \\n(ON>=1 \{\
+.if \\n(ON=1 \{ .IP
+.\" RFC 3978
+This document may not be modified, and derivative works of it may
+not be created\c
+.\}
+.if \\n(ON=2 \{ .IP
+.\" RFC 3978
+This document may not be modified, and derivative works of it may
+not be created, except to publish it as an RFC and to translate it
+into languages other than English\c
+.\}
+.\" RFC 3978
+.if \\n(ON<=2 \{ .if \w\\*(ES \& other than to extract section \\*(ES as\-is for separate use\c
+\&.
+.\}
+.\" RFC 3978
+.if \\n(ON=1 This document may only be posted in an Internet\-Draft.
+.if \\n(ON>2 .tm WARNING: \\n(.F:\\n(OL: macro ON first argument \\n(ON is not valid
+.\}
+.IP
+.\" 1id-guidelines.txt
+Internet\-Drafts
+are working documents
+of the Internet Engineering Task Force (IETF),
+its areas,
+and its working groups.
+Note that
+other groups
+may also distribute
+working documents
+as Internet\-Drafts.
+.IP
+Internet\-Drafts
+are draft documents
+valid for
+a maximum of six months
+and may be updated,
+replaced,
+or obsoleted by other documents
+at any time.
+It is inappropriate to
+use Internet\-Drafts
+as reference material
+or to cite them
+other than as
+"work in progress."
+.IP
+The list of
+current Internet\-Drafts
+can be accessed at
+http://www.ietf.org/ietf/1id\-abstracts.txt.
+.IP
+The list of
+Internet\-Draft Shadow Directories
+can be accessed at
+http://www.ietf.org/shadow.html.
+.\}
+.if \\nN>=0 .if \\*(cAInformational \{\
+.\" draft-rfc-editor-rfc2223bis-08.txt
+This memo
+provides information for
+the Internet community.
+It does not specify
+an Internet standard
+of any kind.
+Distribution of
+this memo
+is unlimited.
+.\}
+.if \\nN>=0 .if \\*(cAExperimental \{\
+.\" draft-rfc-editor-rfc2223bis-08.txt
+This memo
+defines an Experimental Protocol
+for the Internet community.
+It does not specify
+an Internet standard
+of any kind.
+Discussion and suggestions
+for improvement
+are requested.
+Distribution of
+this memo
+is unlimited.
+.\}
+.if \\nN>=0 .if \\*(cAStandards Track \{\
+.\" draft-rfc-editor-rfc2223bis-08.txt
+This document
+specifies an Internet standards track protocol
+for the Internet community,
+and requests discussion and suggestions
+for improvements.
+Please refer to
+the current edition of
+the "Internet Official Protocol Standards" (STD\ 1)
+for the standardization state and status
+of this protocol.
+Distribution of
+this memo
+is unlimited.
+.\}
+.if \\nN>=0 .if \\*(cABest Current Practice \{\
+.\" draft-rfc-editor-rfc2223bis-08.txt
+This document
+specifies an Internet Best Current Practices
+for the Internet community,
+and requests discussion and suggestions
+for improvements.
+Distribution of
+this memo
+is unlimited.
+.\}
+.\" interpolate IESG Note if defined (not numbered, not in TOC)
+.if !(\\n(In=0) \{\
+.SH 10 "IESG Note
+.IP
+.if \\n(In=-1 .I<
+.\" RFC 3932 boilerplate
+.if \\n(In=1 The IESG has not found any conflict between this document and IETF work.
+.if \\n(In=2 The IESG thinks that this work is related to IETF work done in WG \\*(Im, but this does not prevent publishing.
+.if \\n(In=3 The IESG thinks that publication is harmful to the IETF work done in WG \\*(Im and recommends not publishing the document at this time.
+.if \\n(In=4 The IESG thinks that this document violates IETF procedures for \\*(Im and should therefore not be published without IETF review and IESG approval.
+.if \\n(In=5 The IESG thinks that this document extends an IETF protocol in a way that requires IETF review and should therefore not be published without IETF review and IESG approval.
+.if \\n(In=6 The content of this RFC was at one time considered by the IETF, and therefore it may resemble a current IETF work in progress or a published IETF work.  This RFC is not a candidate for any level of Internet Standard.  The IETF disclaims any knowledge of the fitness of this RFC for any purpose and in particular notes that the decision to publish is not based on IETF review for such things as security, congestion control, or inappropriate interaction with deployed protocols.  The RFC Editor has chosen to publish this document at its discretion.  Readers of this RFC should exercise caution in evaluating its value for implementation and deployment.  See RFC\ 3932 for more information.
+.if \\n(In=7 This RFC is not a candidate for any level of Internet Standard.  The IETF disclaims any knowledge of the fitness of this RFC for any purpose and in particular notes that the decision to publish is not based on IETF review for such things as security, congestion control, or inappropriate interaction with deployed protocols.  The RFC Editor has chosen to publish this document at its discretion.  Readers of this document should exercise caution in evaluating its value for implementation and deployment.  See RFC\ 3932 for more information.
+.if \\n(In=8 This RFC is not a candidate for any level of Internet Standard.  The IETF disclaims any knowledge of the fitness of this RFC for any purpose and notes that the decision to publish is not based on IETF review apart from IESG review for conflict with IETF work.  The RFC Editor has chosen to publish this document at its discretion.  See RFC\ 3932 for more information.
+.\}
+.\" brief copyright notice (not numbered, not in TOC)
+.SH 10 "Copyright Notice
+.IP
+.\" draft-rfc-editor-rfc2223bis-08.txt
+Copyright\0\0\(co\0\0The Internet Society (\\*(YR).
+.\" author's content beginning with Abstract (Abstract is not numbered, not in TOC)
+.if \\n(AB \{ .SH 10 Abstract
+.IP
+.A<
+.EP
+.\}
+'in 0
+.\" TOC will logically go here (process with repaginate.awk)
+.nr TC \\n%+1 \" TOC starts on this logical page number (page after Abstract)
+.if \\nC>0 .bp \\n(TC+\\nC \" break page for TOC, next page number is first page after TOC's last page
+..
+.\" #### table of contents ####
+.\" add Table of Contents entry
+.de CE \" 3 arguments: 1. equivalent heading level, 2. actual heading level, 3. heading text string (including any section numbering text)
+.if \\$1<=\\nH \{ .nr LP \\n%
+.if \\*(.Tps .ds XY \\$3
+.nr XX (\\nZu-\\nTu-\\n(nlu+4P)/1p
+.da C<
+.ev 1
+.ll -0.8i \" reserve space for page numbers and indent
+.nr TI (\\$2-1)*\\nIu
+.nr TX \w\\*(SN 
+.in \\n(TIu+\\n(TXu
+.ti -\\n(TXu
+\\$3\\a\\t\\n%
+.in 0
+.ll
+.ev
+.if \\*(.Tps .if \w\\*(SN \Xps: exec [/Title (\\*(XY) /Dest (S\\*(SN) /OUT pdfmark\c
+.di
+.if \\*(.Tps .if \w\\*(SN \Xps: exec [/Dest (S\\*(SN) /Page \\n% /View [ /FitH \\n(XX ] /DEST pdfmark\c
+.\}
+..
+.\" #### section headings ####
+.\" end heading diversion
+.de EH
+.D.
+.ie \\n(HH .nr HH +1
+.el .nr SH +1
+.nr XX \\n(dnu/1P
+.nr HH +\\n(XX
+..
+.\" #### paragraphs ####
+.\" end paragraph diversion
+.de EP
+.D.
+.ie \\n(HH .nr HH +1
+.el .nr SH +1
+.nr PH \\n(dnu/1P
+.if !\\n(IK .WO
+.if !\\n(IP=\\n(IR \{ .nr IR \\n(IP
+.nr IP 0
+.\}
+.in 0
+.nf
+.S<
+.br
+.nf
+.P<
+.br
+.in \\n(I\\n(IRu
+.fi
+.di S<
+.di
+.di P<
+.di
+.nr SH 0
+.nr HH 0
+.nr PH 0
+.if !\\n(.zF< .if (\\n(IF=1)&(\\n(FH<=\\n(TD) .OF
+..
+.\" #### displays ####
+.\" catch display with no type; default to left-adjust type
+.de D
+.LD
+..
+.de CD
+.nf
+.nr OI \\n(.i
+.ce 1000
+..
+.de ID
+.nf
+.nr OI \\n(.i
+.in +\\nIu
+.if \\n(.$ .if !"\\$1"I" .if !"\\$1"" .in \\n(OIu
+.if \\n(.$ .if !"\\$1"I" .if !"\\$1"" .in +\\$1m
+..
+.de LD
+.nf
+.nr OI \\n(.i
+..
+.de BD \" block display: divert, then center
+.nr OI \\n(.i
+.nr BD 1
+.nf
+.in \\n(OIu
+.di D<
+..
+.\" #### keeps ####
+.\" output floating keep
+.de OF
+.if \\n(.zF< .KE
+.nr TD \\n(.tu/1P
+.if \\n(FH>\\n(TD .bp
+.ev 2
+.in 0
+.nf
+.F<
+.br
+.fi
+.in
+.ev
+.rm F<
+.nr IF 0
+.nr FH 0
+..
+.\" #### miscellany ####
+.\" end outstanding diversion
+.de D.
+.br
+.di
+'fi
+'in 0
+..
+.\" macro to set string for month name corresponding to month number
+.de MN \" two arguments; month number, string register name
+.ds \\$2 Unknown
+.if \\$1=1 .ds \\$2 January
+.if \\$1=2 .ds \\$2 February
+.if \\$1=3 .ds \\$2 March
+.if \\$1=4 .ds \\$2 April
+.if \\$1=5 .ds \\$2 May
+.if \\$1=6 .ds \\$2 June
+.if \\$1=7 .ds \\$2 July
+.if \\$1=8 .ds \\$2 August
+.if \\$1=9 .ds \\$2 September
+.if \\$1=10 .ds \\$2 October
+.if \\$1=11 .ds \\$2 November
+.if \\$1=12 .ds \\$2 December
+..
+.\" macro to normalize expiration year, month, day
+.de AX \" 3 arguments; year, month, day
+.nr EY \\$1
+.nr EM \\$2
+.nr ED \\$3
+.if (\\n(ED>31)&(\\n(EM=12) .AX \\n(EY+1 1 \\n(ED-31
+.if (\\n(ED>30)&(\\n(EM=11) .AX \\n(EY 12 \\n(ED-30
+.if (\\n(ED>31)&(\\n(EM=10) .AX \\n(EY 11 \\n(ED-31
+.if (\\n(ED>30)&(\\n(EM=9) .AX \\n(EY 10 \\n(ED-30
+.if (\\n(ED>31)&(\\n(EM=8) .AX \\n(EY 9 \\n(ED-31
+.if (\\n(ED>31)&(\\n(EM=7) .AX \\n(EY 8 \\n(ED-31
+.if (\\n(ED>30)&(\\n(EM=6) .AX \\n(EY 7 \\n(ED-30
+.if (\\n(ED>31)&(\\n(EM=5) .AX \\n(EY 6 \\n(ED-31
+.if (\\n(ED>30)&(\\n(EM=4) .AX \\n(EY 5 \\n(ED-30
+.if (\\n(ED>31)&(\\n(EM=3) .AX \\n(EY 4 \\n(ED-31
+.if (\\n(ED>\\n(FD)&(\\n(EM=2) .AX \\n(EY 3 \\n(ED-\\n(FD
+.if (\\n(ED>31)&(\\n(EM=1) .AX \\n(EY 2 \\n(ED-31
+..
+.\" space once
+.de SP
+.ie \\n(.$ .nr SP \\$1
+.el .nr SP \\nSu
+.br
+.ie \w\\n(.z \!.SP \\n(SPu
+.el \{\
+.nr XX \\n(nlu
+.if \w\n(.z .nr XX +\\n(.du
+.if \\n(XX>\\n(VP \{ 'sp \\n(SPu
+.mk VP
+.if \w\\n(.z .nr VP +\\n(nlu
+.\}
+.\}
+..
+.\" macro to collect author's information for address block
+.de AA \" 1 argument; author number
+.if \\n(.zP< .EP
+'br
+'in 0
+.di AM
+.fi
+.if \w\\*(J\\$1 \\*(J\\$1
+.if \w\\*(N\\$1 \\*(N\\$1
+.br
+.nf
+.if \w\\*(C\\$1 \\*(C\\$1
+.br
+.P\\$1
+.br
+.if \w\\*(T\\$1+\w\\*(F\\$1+\w\\*(M\\$1+\w\\*(U\\$1 .sp 1P
+.if \w\\*(T\\$1 \{ .br
+Telephone: \\*(T\\$1
+.\}
+.if \w\\*(F\\$1 \{ .br
+Fax: \\*(F\\$1
+.\}
+.if \w\\*(M\\$1 \{ .br
+Email: \\*(M\\$1
+.\}
+.if \w\\*(U\\$1 \{ .br
+URL: \\*(U\\$1
+.\}
+.br
+.di
+.if \\$1=1 .SH 0 "\\*(Aa
+.DS I
+.AM
+.DE
+..
+.\" set environment parameters
+.de EV
+.ev \\$1
+.ll \\nLu
+.lt \\n(LTu
+.ss \\n(SS
+.ps \\nP
+.vs \\n(VS
+.hy \\n(HY
+.ad \\n(AD
+'fi
+.ev
+..
+.\" break page if text would be split awkwardly
+.de WO
+.nr TD \\n(.tu/1P
+.if \\n(SH+\\n(HH+\\n(PH>\\n(TD \{\
+.ie \\n(SH+\\n(HH+\\nO>\\n(TD .bp
+.el \{ .ie \\n(HH&(1+\\n(SH+\\n(HH+\\n(PH-\\n(TD=\\nW)&(1+\\n(SH+\\n(HH+\\nO<=\\n(TD) \{ .nr SH +1 \" allow 1 extra line space before heading if it will help
+.SP \\n(SHP
+.\}
+.el .if \\n(SH+\\n(HH+\\n(PH-\\n(TD<\\nW .bp
+.\}
+.\}
+..
+.\" bottom-of-page processing
+.de BP
+'sp 1P
+'tl \\*(LF\\*(CF\\*(RF
+.ie \\n(.A 'bp
+.el \{ .ie n 'tl \\N'12' \" form feed
+.el 'bp
+.\}
+..
+.\" top-of-page processing
+.de TP
+.if t 'sp \\nTu \" troff top margin
+.if \\n(IC \{ .nr % \\n(TC
+.nr IC 0
+.\}
+.ie \\n%>1 \{ .ie o .po \\nRu
+.el .po \\nVu
+'tl \\*(LH\\*(CH\\*(RH
+'sp 1P
+.mk VP
+.\}
+.el .P0
+..
+.\" run-time sanity checks
+.de SC
+.if \\nN<0 .if \w\\*(dr<=1m .ab ERROR: \\n(.F:\\n(.c: set draft file name
+.if \\nN>=0 .if !\\*(cAInformational .if !\\*(cAStandards Track .if !\\*(cAExperimental .if !\\*(cABest Current Practice .ab ERROR: \\n(.F:\\n(.c: set document category
+.if \w\\*(TT<=1m .ab ERROR: \\n(.F:\\n(.c: set title
+.if \w\\*(CH<=1m .ab ERROR: \\n(.F:\\n(.c: set short title
+.if \w\\*(LH+\w\\*(CH+\w\\*(RH+4m>\\n(LT .ab ERROR: \\n(.F:\\n(.c: short title is too long
+.if \\n(NA<=0 .ab ERROR: \\n(.F:\\n(.c: no authors specified
+.if \\*(A1? .ab ERROR: \\n(.F:\\n(.c: set primary author's name
+.if \\*(J1? .ab ERROR: \\n(.F:\\n(.c: set primary author's given name
+.if \\*(N1? .ab ERROR: \\n(.F:\\n(.c: set primary author's surname
+.if \\*(S1? .if ((\\nY<=2005)&((\\nM<4):((\\nM=4)&(\\nD<=3)))) .ab ERROR: \\n(.F:\\n(.c: set primary author's gender indicator
+.if \\*(M1? .ab ERROR: \\n(.F:\\n(.c: set primary author's email mailbox
+.if \\n(NA>9 .ab ERROR: \\n(.F:\\n(.c: too many authors (maximum 9 (should be 5 or fewer), \\n(NA specified)
+.if \\n(NA>5 .tm WARNING: \\n(.F:\\n(.c: too many authors (maximum 5, \\n(NA specified)
+.if (\\n(MA+\\n(FA+\\n(OA<\\n(NA)&((\\nY<=2005)&((\\nM<4):((\\nM=4)&(\\nD<=3)))) .ab ERROR: \\n(.F:\\n(.c: categorize authors by gender
+.if \\nN>=0 .if \\*(cABest Current Practice .if \\n(AN .if !\\*(ATBCP .ab ERROR: \\n(.F:\\n(.c: document category is \\*(cA but alternate document type is \\*(AT
+.if \\n(AN .if \\*(ATBCP .if !\\*(cABest Current Practice .ab ERROR: \\n(.F:\\n(.c: alternate document type is \\*(AT but document category is \\*(cA
+.if \\nN>=0 .if \\*(cABest Current Practice .if !\\n(AN .ab ERROR: \\n(.F:\\n(.c: document category is \\*(cA but alternate document type is not specified (.AN macro)
+.if \\nN<0 .if !\\n(AB .ab ERROR: \\n(.F:\\n(.c: an Abstract is required for an Internet-Draft
+.\" 1id-guidelines draft March 2005
+.if !\\n(ON=0 .if \\*(CAStandards Track .tm WARNING: \\n(.F:\\n(OL: Optional Notices should not be used with Standards Track documents
+..
+.\" run-time setting of strings and initial output
+.de RT
+.\" number of male authors
+.nr MA 0
+.if \\*(S1m .nr MA \\n(MA+1
+.if \\*(S2m .nr MA \\n(MA+1
+.if \\*(S3m .nr MA \\n(MA+1
+.if \\*(S4m .nr MA \\n(MA+1
+.if \\*(S5m .nr MA \\n(MA+1
+.if \\*(S6m .nr MA \\n(MA+1
+.if \\*(S7m .nr MA \\n(MA+1
+.if \\*(S8m .nr MA \\n(MA+1
+.if \\*(S9m .nr MA \\n(MA+1
+.\" number of female authors
+.nr FA 0
+.if \\*(S1f .nr FA \\n(FA+1
+.if \\*(S2f .nr FA \\n(FA+1
+.if \\*(S3f .nr FA \\n(FA+1
+.if \\*(S4f .nr FA \\n(FA+1
+.if \\*(S5f .nr FA \\n(FA+1
+.if \\*(S6f .nr FA \\n(FA+1
+.if \\*(S7f .nr FA \\n(FA+1
+.if \\*(S8f .nr FA \\n(FA+1
+.if \\*(S9f .nr FA \\n(FA+1
+.\" number of "other" authors (indeterminate gender)
+.nr OA 0
+.if \\*(S1o .nr OA \\n(OA+1
+.if \\*(S2o .nr OA \\n(OA+1
+.if \\*(S3o .nr OA \\n(OA+1
+.if \\*(S4o .nr OA \\n(OA+1
+.if \\*(S5o .nr OA \\n(OA+1
+.if \\*(S6o .nr OA \\n(OA+1
+.if \\*(S7o .nr OA \\n(OA+1
+.if \\*(S8o .nr OA \\n(OA+1
+.if \\*(S9o .nr OA \\n(OA+1
+.nr NE 0
+.if \\n(E1 .nr NE \\n(NE+1
+.if \\n(E2 .nr NE \\n(NE+1
+.if \\n(E3 .nr NE \\n(NE+1
+.if \\n(E4 .nr NE \\n(NE+1
+.if \\n(E5 .nr NE \\n(NE+1
+.if \\n(E6 .nr NE \\n(NE+1
+.if \\n(E7 .nr NE \\n(NE+1
+.if \\n(E8 .nr NE \\n(NE+1
+.if \\n(E9 .nr NE \\n(NE+1
+.\" make sure draft file name is all lower-case letters, digits, and hyphens
+.cc 
+di X<
+tr AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+tr ~-`-!-@-#-$-%-^-&-*-(-)-_-+-=-{-[-}-]-|-:-;-'-<-,->-?-/-\\\\-.-"-
+\!ds dr \\*(DR
+tr AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXXYYZZ
+tr ~~``!!@@##$$%%^^&&**(())__++=={{[[}}]]||::;;''<<,,>>??//\\\\\\\\..""
+di
+X<
+rm X<
+cc .
+.if !\\*(dr\\*(DR .tm WARNING: \\n(.F:\\n(FN: draft file name must be all lower-case letters, digits, and hyphens (\\*(DR converted to \\*(dr)
+.nr XX \w\\*(dr
+.nr XY \w0
+.nr XZ \\n(XXu/\\n(XYu
+.if \\n(XZ>50 .tm WARNING: \\n(.F:\\n(FN: draft file name should be no longer than 50 characters excluding version (\\n(XZ)
+.\" left heading
+.if \\nN=0 .ds LH RFC XXXX
+.if \\nN>0 .ds LH RFC \\nN
+.if \\nN<0 .ds LH Internet\-Draft
+.\" current month name and 4+-digit year
+.MN \\nM MO
+.ds YR \\nY
+.\" publication date (month year)
+.ds RH \\*(MO \\*(YR
+.\" run sanity checks
+.SC
+.\" maybe adjust verbiage according to number of authors
+.ie (\\n(NA>1):((\\nY>=2005)&((\\nM>4):((\\nM=4)&(\\nD>=4)))) .ds ET each
+.el .ds ET the
+.\" maybe tweak PC verbiage according to author gender
+.if !(\\n(OA:\\n(FA) .ds HO he
+.if !(\\n(OA:\\n(MA) .ds HO she
+.if \\n(OA:(\\n(MA&\\n(FA):((\\nY>=2005)&((\\nM>4):((\\nM=4)&(\\nD>=4)))) .ds HO he or she
+.if !(\\n(OA:\\n(FA) .ds HS HE
+.if !(\\n(OA:\\n(MA) .ds HS SHE
+.if \\n(OA:(\\n(MA&\\n(FA):((\\nY>=2005)&((\\nM>4):((\\nM=4)&(\\nD>=4)))) .ds HS HE/SHE
+.ie (\\n(NA>1):(\\n(NA=\\n(OA):((\\nY>=2005)&((\\nM>4):((\\nM=4)&(\\nD>=4)))) .ds AR authors retain all their
+.el \{ .if !(\\n(OA:\\n(FA) .if \\n(MA=1 .ds AR author retains all his
+.if !(\\n(OA:\\n(MA) .if \\n(FA=1 .ds AR author retains all her
+.\}
+.\" Shakespeare and Swift were right
+.\" .if (\\nY>=2005)&((\\nM>4):((\\nM=4)&(\\nD>=4))) .tm WARNING: beginning 2005-04-04 21:00 UTC only hermaphrodites, transsexuals, and multi-gender teams are allowed to submit Internet-Drafts per <E1DIV1I-0004ET-UY@newodin.ietf.org> :-/
+.\" expiration date (internet-drafts only); 185 days from date of issue
+.\" number of days in February (take leap years into account)
+.nr FD 28
+.ie \\nM-2 .nr FY \\nY+1
+.el .nr FY \\nY
+.if !\\n(FY%4 .if \\n(FY%100 .nr FD 29
+.if !\\n(FY%400 .nr FD 29
+.\" expiration 185 days from date of issue (1id-guidelines.txt)
+.AX \\nY \\nM \\nD+185
+.\" expiration month name goes into string EX
+.MN \\n(EM EX
+.as EX " \\n(ED, \\n(EY
+.\" page footer with magic tokens
+.ds LF \\*(N1
+.if !\w\\*(A3 .if \w\\*(N2 .as LF " & \\*(N2
+.if \w\\*(A3 .as LF , et al.
+.if \\nN<0 .ds CF Expires \\*(EX
+.if \\nN>=0 .ds CF \\*(cA
+.ds RF [Page %]
+.\" legacy nroff format for use with "fix.pl" (uncomment to use)
+.\" .if n .ds RF FORMFEED[Page %]
+.\" draft version based on negative N
+.nr DV 0-1-\\nN
+.ds DV
+.if \\n(DV<=9 .as DV 0
+.as DV \\n(DV
+.if \w\\*(dr>=1m .as dr \-\\*(DV
+.nr I0 0
+..
+.\" ######## initialization ########
+.\" avoid groff's butt-ugly ligatures
+.lg 0
+.ds A1 ?
+.ds A2
+.ds A3
+.ds A4
+.ds A5
+.ds A6
+.ds A7
+.ds A8
+.ds A9
+.ds AR
+.ds C1
+.ds C2
+.ds C3
+.ds C4
+.ds C5
+.ds C6
+.ds C7
+.ds C8
+.ds C9
+.ds dr
+.ds DR
+.ds ES
+.ds F1
+.ds F2
+.ds F3
+.ds F4
+.ds F5
+.ds F6
+.ds F7
+.ds F8
+.ds F9
+.ds HS
+.ds J1 ?
+.ds J2
+.ds J3
+.ds J4
+.ds J5
+.ds J6
+.ds J7
+.ds J8
+.ds J9
+.ds M1 ?
+.ds M2
+.ds M3
+.ds M4
+.ds M5
+.ds M6
+.ds M7
+.ds M8
+.ds M9
+.ds MT
+.ds N1 ?
+.ds N2
+.ds N3
+.ds N4
+.ds N5
+.ds N6
+.ds N7
+.ds N8
+.ds N9
+.ds O<
+.ds S1 ?
+.ds S2 ?
+.ds S3 ?
+.ds S4 ?
+.ds S5 ?
+.ds S6 ?
+.ds S7 ?
+.ds S8 ?
+.ds S9 ?
+.ds T1
+.ds T2
+.ds T3
+.ds T4
+.ds T5
+.ds T6
+.ds T7
+.ds T8
+.ds T9
+.ds U1
+.ds U2
+.ds U3
+.ds U4
+.ds U5
+.ds U6
+.ds U7
+.ds U8
+.ds U9
+.ds U<
+.ds YR
+.de C<
+..
+.de IM
+..
+.de NM
+..
+.de P1
+..
+.de P2
+..
+.de P3
+..
+.de P4
+..
+.de P5
+..
+.de P6
+..
+.de P7
+..
+.de P8
+..
+.de P9
+..
+.\" TOC start page
+.\" # of TOC pages
+.if !\nC .nr C 0
+.if !\nD .nr D \n(dy
+.\" heading level limit for TOC
+.if !\nH .nr H 2
+.\" paragraph indent increment
+.if !\nI .nr I 0.3i \" draft-rfc-editor-rfc2223bis-08.txt (suggested)
+.\" line length
+.if !\nL .nr L 7.2i \" draft-rfc-editor-rfc2223bis-08.txt
+.nr XX \nLu/0.1i
+.if \nLu>7.2i \{ .tm NOTICE: line length may not exceed 72 characters; overriding setting (\n(XX characters)
+.nr L 7.2i
+.\}
+.if !\nM .nr M \n(mo
+.\" minimum number of continued running text lines at bottom of page (anything less is considered an orphan)
+.if !\nO .nr O 2
+.\" (troff) point size
+.if !\nP .nr P 12 \" draft-rfc-editor-rfc2223bis-08.txt (minimum 10) [12 matches text version]
+.\" number of printed lines per page, including heading and footer
+.if !\nQ .nr Q 58 \" draft-rfc-editor-rfc2223bis-08.txt (maximum)
+.if \nQ>58 \{ .tm NOTICE: maximum number of lines per page is 58; overriding setting (\nQ)
+.nr Q 58
+.\}
+.if !\nS .nr S 1P
+.if !\nW .nr W 2
+.if \nQ<(11+1+\nW+1+1) .tm WARNING: \nQ lines per page may cause problems; try a larger value
+.\" (troff) paper width
+.if !\nX .nr X 8.5i \" draft-rfc-editor-rfc2223bis-08.txt
+.\" recto (odd-numbered) page offset (troff)
+.if !\nR .nr R (\nXu-\nLu)/2u \" text centered (differs from draft-rfc-editor-rfc2223bis-08.txt PostScript format)
+.\" verso (even-numbered) page offset (troff)
+.if !\nV .nr V \nRu \" text centered (differs from draft-rfc-editor-rfc2223bis-08.txt PostScript format)
+.if !\nY \{ .if \n(yr>1969 .nr Y \n(yr
+.if \n(yr<1969 .if \n(yr>=100 .nr Y \n(yr+1900
+.if \n(yr<1969 .if \n(yr<100 .nr Y \n(yr+2000
+.\}
+.\" (troff) paper length
+.if !\nZ .nr Z 11i \" draft-rfc-editor-rfc2223bis-08.txt
+.if !\nT .nr T (\nZu-\nQP)/2u
+.nr XX \nZu/1P
+.nr XY \nTu/1P
+.if \nTu+\nQP>\nZu .tm WARNING: text (\nQ lines) will not fit on page height (equivalent to \n(XX text lines) with specified top margin (equivalent to \\n(XY text lines)
+.nr XX \nLu/0.1i
+.nr XY \nXu/0.1i
+.nr XZ \nRu/0.1i
+.if \nRu+\nLu>\nXu .tm WARNING: text lines (\n(XX characters) will not fit on page width (equivalent to \n(XY characters) with specified recto page offset (equivalent to \n(XZ characters)
+.nr XZ \nVu/0.1i
+.if \nVu+\nLu>\nXu .tm WARNING: text lines (\n(XX characters) will not fit on page width (equivalent to \n(XY characters) with specified verso page offset (equivalent to \n(XZ characters)
+.nr AB 0
+.nr AN 0
+.nr BD 0
+.nr E1 0
+.nr E2 0
+.nr E3 0
+.nr E4 0
+.nr E5 0
+.nr E6 0
+.nr E7 0
+.nr E8 0
+.nr E9 0
+.nr HH 0
+.nr IC 0
+.nr ID 0
+.nr IF 0
+.nr IK 0
+.nr IL 0
+.nr IN 0
+.nr IP 0
+.nr IR 0
+.nr IS 0
+.nr In 0
+.nr L# 0
+.nr NA 0
+.nr NL 0
+.nr NN 0
+.nr ON 0
+.nr PH 0
+.nr SH 0
+.nr VP 0
+.\" top/bottom-of-page margin for troff version; 1/2 difference between 11.0 inches and printing text height (deviates from RFC 2223 PostScript format)
+.wh 0 TP
+.\" basic RFC style parameters
+.nr VS 12 \" draft-rfc-editor-rfc2223bis-08.txt
+.\" point size and spacing to conform page fill for troff'ed version (for PS/PDF)
+.nr SS 36
+.cs R \n(SS 7.2	\" 7.2 points = 0.1inch
+.cs I \n(SS 7.2	\" 7.2 points = 0.1inch
+.cs B \n(SS 7.2	\" 7.2 points = 0.1inch
+.if t .fp 1 C \" Courier is monospaced
+.if t .cs C \n(SS 7.2	\" 7.2 points = 0.1inch
+.ie n .pl \nQP+1P \" printing lines plus one for form feed
+.el .pl \nZu
+.ie n .wh -3P BP \" 1P space, footer, form feed
+.el .wh \nTu+\nQP-2P BP \" space and footer plus top margin and text lines
+.if n .nr R 0
+.if n .nr T 0
+.if n .nr V 0
+.po \nRu \" for first page
+.nr LT \nLu \" draft-rfc-editor-rfc2223bis-08.txt (same as line length)
+.\" no hyphenation
+.nr HY 0 \" draft-rfc-editor-rfc2223bis-08.txt
+.\" left adjust
+.ad l \" draft-rfc-editor-rfc2223bis-08.txt
+.nr AD \n(.j
+.EV 0
+.EV 1
+.EV 2
+.\" summary of registers, strings, macros, and environment use
+.\"
+.\" registers used:
+.\" C Table of Contents length (pages)
+.\" D day
+.\" H highest section heading level to include in Table of Contents
+.\" I paragraph indent increment (0.3 inch)
+.\" L line length (7.2 inches)
+.\" M month
+.\" N RFC/draft number (negative for drafts)
+.\" O minimum number of continued running text lines at bottom of page (anything less is considered an orphan) (2)
+.\" P point size (troff)
+.\" Q printed lines per page (58)
+.\" R page offset for odd-numbered (recto) pages
+.\" S interparagraph space (1 Pica)
+.\" T extra top-of-page vertical margin (troff)
+.\" V page offset for even-numbered (verso) pages
+.\" W minimum number of continued running text lines at top of page (anything less is considered a widow) (2)
+.\" X paper width (troff)
+.\" Y current 4-digit year
+.\" Z paper height (troff)
+.\" .S used in output from dot (graphviz)
+.\" AB flag: non-zero if an Abstract is supplied
+.\" AD line adjustment type
+.\" AN alternate document number (set by RFC Editor for BCP, STD, FYI documents)
+.\" BD block display diversion width
+.\" DF used in output from dot (graphviz)
+.\" DV draft version
+.\" E1 flag; "author" 1 is an editor
+.\" E2 flag; "author" 2 is an editor
+.\" E3 flag; "author" 3 is an editor
+.\" E4 flag; "author" 4 is an editor
+.\" E5 flag; "author" 5 is an editor
+.\" E6 flag; "author" 6 is an editor
+.\" E7 flag; "author" 7 is an editor
+.\" E8 flag; "author" 8 is an editor
+.\" E9 flag; "author" 9 is an editor
+.\" ED draft expiration day
+.\" EF flag; fill mode in equation
+.\" EH equation height
+.\" EI line length minus block display indent
+.\" EM draft expiration month
+.\" EP used by eqn
+.\" EY draft expiration date
+.\" FA number of female authors
+.\" FD number of days in February for expiration date computation
+.\" FH floating keep height
+.\" FN source file line number where draft file name is set
+.\" FY year in which February occurs for expiration date computation
+.\" H1 first level section heading number
+.\" H2 second level section heading number
+.\" H3 third level section heading number
+.\" H4 fourth level section heading number
+.\" H5 fifth level section heading number
+.\" H6 sixth level section heading number
+.\" H7 seventh level section heading number
+.\" H8 eighth level section heading number
+.\" H9 ninth level section heading number
+.\" HH height (lines) of diverted section heading(s)
+.\" HY hyphenation type
+.\" I0 initial indent level
+.\" I1 indent level
+.\" I2 indent level
+.\" I3 indent level
+.\" I4 indent level
+.\" I5 indent level
+.\" I6 indent level
+.\" I7 indent level
+.\" I8 indent level
+.\" I9 indent level
+.\" IC flag: start Table of Contents processing
+.\" ID flag: non-zero in display
+.\" IF flag; floating keep active
+.\" IK keep nesting level
+.\" IS flag: independent submission
+.\" IT flag: in table
+.\" IL length of longest informative reference string (including space)
+.\" In IESG Note flag/type; zero for no note, -1 for custom note, >0 for RFC 3932 note
+.\" IN informative reference count
+.\" IP previous indent level in indented paragraph processing
+.\" IR indent level per RS/RE macros
+.\" KI keep indent
+.\" L# list level
+.\" L1 top-level list counter
+.\" L2 second level list counter
+.\" L3 third level list counter
+.\" L4 fourth level list counter
+.\" L5 fifth level list counter
+.\" L6 sixth level list counter
+.\" L7 seventh level list counter
+.\" L8 eighth level list counter
+.\" L9 ninth level list counter
+.\" LE flag; center equation
+.\" LP last page number in Table of Contents
+.\" M1 top-level list running indent
+.\" M2 second level list running indent
+.\" M3 third level list running indent
+.\" M4 fourth level list running indent
+.\" M5 fifth level list running indent
+.\" M6 sixth level list running indent
+.\" M7 seventh level list running indent
+.\" M8 eighth level list running indent
+.\" M9 ninth level list running indent
+.\" MA number of male authors
+.\" MK used by eqn
+.\" NA number of authors/editors
+.\" NE number of editors
+.\" NL length of longest normative reference string (including space)
+.\" NN normative reference count
+.\" NS section heading level
+.\" OA number of authors of indeterminate gender
+.\" OI old indent when in display
+.\" OL source file line of ON macro call
+.\" ON optional notice text version
+.\" PH height (lines) of diverted paragraph text
+.\" RL length of current (most recent) reference tag string
+.\" SH height (lines) of pre-heading or pre-paragraph vertical space in diverted section or paragraph
+.\" SP non-accumulating space distance
+.\" SS space size (troff/nroff compatibility)
+.\" Ti saved indent during TS processing
+.\" TC Table of Contents starting page number
+.\" TD distance to trap in text lines
+.\" TH flag: tale has saved heading
+.\" TI section indent
+.\" TL input file line number for setting table of contents page count
+.\" TN number of tables on page
+.\" TX section heading level string width (including 1 space after number)
+.\" TW reserved for use by tbl
+.\" VP vertical place on page during last SP request processed
+.\" VS line spacing (troff/nroff compatibility 12 points = 1 Pica)
+.\" XW general scratchpad
+.\" XX general scratchpad
+.\" XY general scratchpad
+.\" XZ general scratchpad
+.\"
+.\" strings:
+.\" A1 primary author name for heading
+.\" A2 second author name for heading
+.\" A3 third author name for heading
+.\" A4 fourth author name for heading
+.\" A5 fifth author name for heading
+.\" A6 sixth author name for heading
+.\" A7 seventh author name for heading
+.\" A8 eighth author name for heading
+.\" A9 ninth author name for heading
+.\" Aa Author's Address or Authors' Addresses
+.\" AR customized version of author's rights
+.\" AT alternate document type (BCP, FYI, or STD)
+.\" B1 string for 1st level bulletted list
+.\" B2 string for 2nd level bulletted list
+.\" B3 string for 3rd level bulletted list
+.\" B4 string for 4th level bulletted list
+.\" B5 string for 5th level bulletted list
+.\" B6 string for 6th level bulletted list
+.\" B7 string for 7th level bulletted list
+.\" B8 string for 8th level bulletted list
+.\" B9 string for 9th level bulletted list
+.\" C1 primary author's affiliation
+.\" C2 second author's affiliation
+.\" C3 third author's affiliation
+.\" C4 fourth author's affiliation
+.\" C5 fifth author's affiliation
+.\" C6 sixth author's affiliation
+.\" C7 seventh author's affiliation
+.\" C8 eighth author's affiliation
+.\" C9 ninth author's affiliation
+.\" CF center page footer string
+.\" CH center of page heading
+.\" dr draft file name (lower-case enforced)
+.\" DR draft file name (as specified)
+.\" DV draft version
+.\" EE equation numbering
+.\" EL equation label
+.\" ES section which may be extracted
+.\" ET each or the (boilerplate tweak)
+.\" EX expiration month name
+.\" F1 primary author fax number
+.\" F2 second author fax number
+.\" F3 third author fax number
+.\" F4 fourth author fax number
+.\" F5 fifth author fax number
+.\" F6 sixth author fax number
+.\" F7 seventh author fax number
+.\" F8 eighth author fax number
+.\" F9 ninth author fax number
+.\" HO customized version of he or she
+.\" HS customized version of screaming all caps HE/SHE
+.\" Im IESG note customization (2nd argument)
+.\" J1 primary author first name (and/or initials) for author's address
+.\" J2 second author first name (and/or initials) for author's address
+.\" J3 third author first name (and/or initials) for author's address
+.\" J4 fourth author first name (and/or initials) for author's address
+.\" J5 fifth author first name (and/or initials) for author's address
+.\" J6 sixth author first name (and/or initials) for author's address
+.\" J7 seventh author first name (and/or initials) for author's address
+.\" J8 eighth author first name (and/or initials) for author's address
+.\" J9 ninth author first name (and/or initials) for author's address
+.\" L2 first page second line left heading
+.\" L3 first page third line left heading
+.\" L4 first page fourth line left heading
+.\" L5 first page fifth line left heading
+.\" L6 first page sixth line left heading
+.\" L7 first page seventh line left heading
+.\" LF left page footer string
+.\" LG list item number format
+.\" LH left page heading
+.\" LS list item label string
+.\" M1 primary author's email mailbox
+.\" M2 second author's email mailbox
+.\" M3 third author's email mailbox
+.\" M4 fourth author's email mailbox
+.\" M5 fifth author's email mailbox
+.\" M6 sixth author's email mailbox
+.\" M7 seventh author's email mailbox
+.\" M8 eighth author's email mailbox
+.\" M9 ninth author's email mailbox
+.\" MO current month name
+.\" MT module type for MIB/PIB/etc. copyright notice
+.\" N1 primary author surname for footer
+.\" N2 second author surname for footer
+.\" N3 third author surname for footer
+.\" N4 fourth author surname for footer
+.\" N5 fifth author surname for footer
+.\" N6 sixth author surname for footer
+.\" N7 seventh author surname for footer
+.\" N8 eighth author surname for footer
+.\" N9 ninth author surname for footer
+.\" O< list of RFCs obsoleted
+.\" RF right page footer string
+.\" RH right page heading
+.\" RN most recent automatically numbered reference tag
+.\" S1 primary author's gender
+.\" S2 second author's gender
+.\" S3 third author's gender
+.\" S4 fourth author's gender
+.\" S5 fifth author's gender
+.\" S6 sixth author's gender
+.\" S7 seventh author's gender
+.\" S8 eighth author's gender
+.\" S9 ninth author's gender
+.\" SN section heading number string
+.\" T1 primary author telephone number
+.\" T2 second author telephone number
+.\" T3 third author telephone number
+.\" T4 fourth author telephone number
+.\" T5 fifth author telephone number
+.\" T6 sixth author telephone number
+.\" T7 seventh author telephone number
+.\" T8 eighth author telephone number
+.\" T9 ninth author telephone number
+.\" TT title
+.\" U< list of RFCs updated
+.\" U1 primary author URI
+.\" U2 second author URI
+.\" U3 third author URI
+.\" U4 fourth author URI
+.\" U5 fifth author URI
+.\" U6 sixth author URI
+.\" U7 seventh author URI
+.\" U8 eighth author URI
+.\" U9 ninth author URI
+.\" XX scratchpad
+.\" XY scratchpad
+.\" Y1 top-level list prefix
+.\" Y2 second level list prefix
+.\" Y3 third level list prefix
+.\" Y4 fourth level list prefix
+.\" Y5 fifth level list prefix
+.\" Y6 sixth level list prefix
+.\" Y7 seventh level list prefix
+.\" Y8 eighth level list prefix
+.\" Y9 ninth level list prefix
+.\" YR current 4-digit year
+.\" Z1 top-level list suffix
+.\" Z2 second level list suffix
+.\" Z3 third level list suffix
+.\" Z4 fourth level list suffix
+.\" Z5 fifth level list suffix
+.\" Z6 sixth level list suffix
+.\" Z7 seventh level list suffix
+.\" Z8 eighth level list suffix
+.\" Z9 ninth level list suffix
+.\"
+.\" macros:
+.\" A< Abstract text (diversion)
+.\" AA output an author's address information
+.\" AB set Abstract text
+.\" AE reserved for ABNF formatter
+.\" AM author's information (temporary diversion while processing end matter)
+.\" AN set BCP, FYI, STD (RFC Editor use)
+.\" AS reserved for ABNF formatter
+.\" AU set author information
+.\" AX normalize year, month, day
+.\" B< block centered title (diversion)
+.\" BC reserved to indicate block comments in an ABNF rule
+.\" BD block centered display
+.\" BL start a bullet list
+.\" BP bottom of page processing
+.\" BR reserved for BCP reference preprocessor
+.\" C< Table of Contents (diversion)
+.\" CA set RFC category
+.\" CD centered display
+.\" CE Table of Contents entry
+.\" D synonym for ID
+.\" D< display content (diversion)
+.\" D. end outstanding diversion
+.\" DE display end
+.\" DF floating display start
+.\" DR reserved for idref preprocessor (does not conflict with string if references resolve)
+.\" DS display start
+.\" DT set date
+.\" E< equations (diversion)
+.\" ED set document editor information
+.\" EH end heading diversion
+.\" EM end of document processing
+.\" EP end paragraph diversion
+.\" EV set environment parameters
+.\" F< floating keep (diversion)
+.\" FN set draft file name base
+.\" FR reserved for FYI reference preprocessor
+.\" G1 start of grap
+.\" G2 end of grap
+.\" H< repeat table heading (top of new page)
+.\" I< IESG Note (diversion)
+.\" IB MIB/PIB copyright notice
+.\" ID indented display
+.\" IE end of automatically numbered informative reference
+.\" IM informative references (diversion)
+.\" IN IESG note
+.\" IP indented paragraph start
+.\" IR start automatically numbered informative reference
+.\" IS independent submission
+.\" K< keep content (diversion)
+.\" KE end keep
+.\" KF floating keep start
+.\" KS start keep
+.\" LD left aligned display
+.\" LE list end
+.\" LI list item
+.\" LP left aligned block paragraph
+.\" MN set specified string to month name given by month number
+.\" NE end of automatically numbered normative reference
+.\" NH begin a numbered section and set heading
+.\" NL start a numbered list
+.\" NM normative references (diversion)
+.\" NR start automatically numbered normative reference
+.\" NS need vertical space (interface to .ne)
+.\" NU set RFC number
+.\" OF output floating keep
+.\" OB RFCs obsoleted by this document
+.\" ON Optional Notice
+.\" P< paragraph content (diversion)
+.\" P0 first page top of page processing
+.\" P1 primary author's postal address (diversion)
+.\" P2 second author's postal address (diversion)
+.\" P3 third author's postal address (diversion)
+.\" P4 fourth author's postal address (diversion)
+.\" P5 fifth author's postal address (diversion)
+.\" PE picture end
+.\" PS picture start
+.\" RD reference text (diversion)
+.\" RE restore earlier indent level
+.\" RR reserved for RFC reference preprocessor
+.\" RS increase indent level
+.\" RT run-time initialization
+.\" S< section heading content (diversion)
+.\" SC sanity check on parameters
+.\" SH begin an unnumbered section and set heading
+.\" SP non-accumulating space request
+.\" SR reserved for STD reference preprocessor
+.\" ST set short title
+.\" T< table heading content (diversion)
+.\" T& table continuation
+.\" TC set Table of Contents length and maximum section heading level
+.\" TE table end
+.\" TH table heading end
+.\" TL set (long) title
+.\" TP top of page processing
+.\" TS table start
+.\" UP RFCs updated by this document
+.\" VL variable list start
+.\" WO widow/orphan control; break page if text would be split awkwardly
+.\" X< trash receptacle (diversion)
+.\"
+.\" environments:
+.\" 0 normal text
+.\" 1 tables, table of contents entries, reference entries
+.\" 2 table heading interpolation, keep diversion

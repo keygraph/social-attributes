@@ -1,0 +1,150 @@
+.\" Description: Internet-Draft/RFC source template
+.\" for text version, process as: rfcref | dformat | chem | neqn | grap | pic | tbl | abnff | nroff -Tascii -mrfc | awk -f repaginate,awk
+.\" for pdf version, generate PostScript for conversion to "letter" size PDF by processing as: rfcref | dformat | chem | eqn | grap | pic | tbl | abnff | troff -Tps -mrfc | awk f psrenumber.awk
+.\" draft/RFC number (or comment out and set version/RFC number on command-line)
+.NU -1
+.\" long version of document title
+.TL "This is the Long Version of the Title
+.\" short version of title for page header
+.ST "Short Title
+.\" Date override
+.\" .DT 2005 04 01
+.\" author (or editor (change AU to ED)) information
+.AU "A. Nonymous" Ann Nonymous o a.nonymous@example.com "tel no." "fax no." "http://www.example.com/foo" "Acme Widget Company"
+123 Main St.
+Anytown, XX 12345\-6789
+.\" internet-draft file name (internet drafts only; ignored for RFCs)
+.FN draft-nonymous-subject-matter
+.\" Table of Contents
+.TC 1 2
+.\" Category (RFCs; Intended status for drafts) (one of: Informational, Standards Track, Experimental, Best Current Practice)
+.CA Informational
+.\" Independent submission (RFC Editor only)
+.\" .IS
+.\" IESG Note (RFC Editor as directed by IESG)
+.\" .IN 1
+.\" Optional notice
+.\" .ON 1
+.\" Alternate series number (RFC Editor)
+.\" .AN STD 0
+.\" updates RFCs (if any)
+.\" .UP 9999
+.\" Obsoletes RFCs (if any)
+.\" .OB 9998
+.\" example of how to include metadata which is not formatted (no WG or KW directives are defined)
+.WG WORKINGGROUP
+.KW keyword
+.KW etcetera
+.\" Abstract
+.AB
+The document Abstract goes here.
+.\" Introduction (first numbered section, in TOC)
+.NH 1 Introduction
+.IP
+First paragraph of Introduction.
+Blah blah blah
+.\" normative reference, tag saved in string r1
+.RR N 1234 r1
+\& yadda yadda.
+For information, see
+.\" informative reference, tag saved in string r2
+.IR CSTR54 r2
+Ossanna, Joseph F.,
+"NROFF/TROFF User's Manual",
+Computing Science Technical Report No.54,
+Bell Laboratories,
+Murray Hill, New Jersey,
+1976.
+.IE
+\&.
+.IP
+Another paragraph.
+It's a good idea
+to include a paragraph
+describing the scope
+of the document,
+otherwise reviewers
+may
+try to mutate the document
+into some pet project
+of the reviewer.
+.\" second-level heading
+.NH 2 "Second-level Heading
+.IP
+N.B. hyphen in heading is not escaped.
+This is a paragraph.
+.\" using reference tag strings:
+See references \*(r1 and \*(r2.
+.\" Third-level heading
+.NH 3 "Third-level Heading
+.IP
+Another paragraph.
+.\" new second-level heading
+.NH 2 "Another Second-level Heading
+.IP
+Yet another paragraph.
+.\" Second first-level heading (i.e. Section 2.)
+.NH 1 "Requirement Levels
+.IP
+The key words
+"MUST", \" 1
+"MUST\ NOT", \" 2
+.\" "REQUIRED", \" 3
+.\" "SHALL", \" 4
+.\" "SHALL\ NOT", \" 5
+"SHOULD", \" 6
+"SHOULD\ NOT" \", \" 7
+and
+"RECOMMENDED" \", \" 8
+.\" "MAY" \" 9
+.\" "OPTIONAL" \" 10
+in this document
+are to be interpreted
+as described in
+.BR N 14
+\&.
+.\" Additional sections go here, as needed.
+.\" Contributors
+.\" .NH 1 Contributors
+.\" .IP
+.\" Acknowledgments
+.NH 1 Acknowledgments
+.IP
+Acknowledgments go here.
+.\" Security considerations
+.NH 1 "Security Considerations
+.IP
+No security considerations are addressed by this memo.  The presence of this template text indicates that the author/editor has not actually reviewed security matters.
+.\" Internationalization considerations
+.NH 1 "Internationalization Considerations
+.IP
+This memo raises no new internationalization considerations.  The presence of this template text indicates that the author/editor has not actually reviewed internationalization considerations.
+.\" IANA considerations
+.NH 1 "IANA Considerations
+.IP
+This memo adds no new IANA considerations.  The presence of this template text indicates that the author/editor has not actually reviewed IANA considerations.
+.\" Appendixes
+.AP "An Appendix
+.\" second-level heading in appendix
+.NH 2 "Second-level Heading
+.IP
+Text in a paragraph.
+.\" trick to omit content from published RFC (note matching backslash-bracket directive at end of lists)
+.if \nN<0 \{ \
+.\" Another Appendix (reserve space for heading, first paragraph, and first list item)
+.NS 8P
+.AP "Change History"
+.IP
+[[This change history will not be part of a published RFC]]
+.VL
+.LI "inital \-00 version
+.BL
+.LI
+first bullet item
+.LI
+second bullet item
+.LE \" end of bullet list
+.LE \" end of variable item list
+.\}
+.\" End matter
+.EM

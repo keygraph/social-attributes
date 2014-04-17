@@ -1,0 +1,325 @@
+.\" Description: Internet-Draft/RFC source template
+.\" for text version, process as: rfcref | dformat | chem | neqn | grap | pic | tbl | abnff | nroff -Tascii -mrfc | awk -f repaginate,awk
+.\" for pdf version, generate PostScript for conversion to "letter" size PDF by processing as: rfcref | dformat | chem | eqn | grap | pic | tbl | abnff | troff -Tps -mrfc | awk f psrenumber.awk
+.NU -1
+.TL "OpenPGP Entity Control Attestations"
+.ST "OpenPGP Attestations"
+.AU "J. Lester" Judson Lester "m" "judson@lrdesign.com" "" "" "" ""
+.FN draft-lester-openpgp-attestations
+.CA Experimental
+.\" Abstract
+.AB
+This document describes an OpenPGP technique to casually verify the control of
+an OpenPGP keypair based on signed well-formed documents which are then
+published to public content services. The assumed authorization required to
+publish the document, coupled with the signature, forms a (limited) basis of
+trust for the key.
+
+.TC 1 2
+
+.NH 1 Introduction
+
+.IP
+It is sometimes useful to be able to verify that an OpenPGP keypair is
+controlled by the same user that controls another network-available entity in
+circumstances where discovering a traditional chain of trust to their keypair.
+
+.IP
+For instance, one might want to use a security checking tool built in the
+aftermath of a widespread TLS vulnerability. Being able to verify with some
+limited trust that the package is written by its purported author would be
+useful. Verifying that the key used to sign the tool belongs to the owner of
+the github.com account used to publish it would therefore be useful.
+
+.IP
+We propose a user attribute subtype and scheme of data to be encoded into
+a user attribute in order that networked accounts be associated with keypairs.
+
+.NH 1 "Requirement Levels
+.IP
+The key words
+"MUST", \" 1
+"MUST\ NOT", \" 2
+.\" "REQUIRED", \" 3
+.\" "SHALL", \" 4
+.\" "SHALL\ NOT", \" 5
+"SHOULD", \" 6
+"SHOULD\ NOT" \", \" 7
+and
+"RECOMMENDED" \", \" 8
+.\" "MAY" \" 9
+.\" "OPTIONAL" \" 10
+in this document
+are to be interpreted
+as described in
+.NR RFC2119 r1
+Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP
+14, RFC 2119, March 1997.
+.NE
+
+.NH 1 Preliminaries
+
+.NH 2 Goal
+
+.IP
+The goal of the attestation process is that one entity be able to confirm
+that another controls both an OpenPGP keypair and the rights to publish through
+a public service. For instance, to publish plain text snippets to
+https://gist.github.com/.
+
+.NH 2 Method
+.IP
+Generally speaking, in order to demonstrate that they control both their
+keypair and an online account, a user produces a document that identifies the
+account and signs it.
+
+.IP
+They publish the signed document along with the fingerprint of their key to the
+service that hosts the account such that it's clear that only that account
+could have published the document. Then they add a user attribute packet to
+their key that includes the document along with information about finding the
+signed version.
+
+.IP
+Having either discovered the published document or retrieved the public key, a
+different user can then find the other half of the association proof, confirm
+that the signature is valid, an possibly assign a limited trust to the key in
+question.
+
+.NH 1 Attestations
+
+.NH 2 Attestation
+.IP
+An attestation consists of a pair of documents:
+.BL
+.LI
+A user attribute packet
+.LI
+A published statement
+.BE
+
+.NH 3 User Attribute Packet
+
+.IP
+The user attribute packet consists of:
+.BL
+.LI
+A service URI parameter
+.LI
+The association data
+.BE
+
+.NH 3 Published Statement
+.IP
+The published statement consists of:
+.BL
+.LI
+A string identifying the statement: "This is an OpenPGP attestation for"
+.LI
+The key fingerprint of the public key
+.LI
+The association data
+.BE
+
+.NH 3 Association Data
+.IP
+An association consists of:
+.BL
+.LI
+The version of the attestation spec (currently "1")
+.LI
+A v5 UUID nonce generated according to
+.NR RFC4412 ruuid
+Schulzrinne, H. and J. Polk, "Communications Resource Priority for the Session
+Initiation Protocol (SIP)", RFC 4412, February 2006.
+.NE
+.LI
+A timestamp, represented as seconds since 0:00UTC Jan 1, 1970
+.LI
+The service specification name
+.LI
+The service specification version
+.LI
+A service entity identifier
+.BE
+
+.NH 2 Encoding documents
+
+.IP
+Documents MUST be encoded by concatenating ASCII strings with OpenPGP line
+endings (i.e. <CR><LF>). White space before or after the terms of the
+attestation documents MUST NOT appear. Given a particular set of data to
+encode, there MUST be only one valid encoding.
+
+.NH 1 Procedures
+
+.NH 2 Creating An Attestation
+
+.IP
+In order to produce and publish an attestation, a user or implementation SHOULD
+follow the following steps
+
+.NL
+.LI
+Generate the nonce per \*(ruuid
+.LI
+Produce the association document
+.LI
+Produce the published statement by concatenating the key fingerprint,
+"<CR><LF>", the association
+.LI
+Sign the published statement with public key
+.LI
+ASCII armor the signed published document
+.LI
+Deliver the document to the service (outside of scope)
+.LI
+Get URL for the document in the scope of the service
+.LI
+Extract the URI parameter
+.LI
+Produce the user attribute packet by concatenating the URI parameter,
+"<CR><LF>", the association
+.LI
+Add attribute to your key
+.LI
+(optionally) publish the key
+.LE
+
+.NH 2 Verifying An Attestation
+
+.IP
+Having come across attestation data, a user SHOULD verify it before making any
+use of the implied association.
+
+.NH 3 From a Published Statement
+
+.IP
+Upon discovering the published statement half of an attestation, a user or
+implementation MAY verify it by following these steps:
+
+.NL
+.LI
+Retrieve the key based on its fingerprint from a keyserver or other source.
+.LI
+Verify the validity of the key
+.LI
+Verify the signature of the key on the published statement
+.LI
+Confirm that the key has an attached attestation user attribute packet that
+contains association data that matches the published statement in question.
+.LE
+
+If any of the above steps fails, the attestation MUST be considered invalid. If
+the retrieved key's user attribute packet does not match the published
+statement, verification MAY be started again, by discarding the current
+published statement and using the user attribute packet.
+
+.NH 3 From a Key User Attribute Packet
+
+.IP
+Having retrieved a key for an unknown entity, a user MAY verify its association
+with whatever online accounts are attested by following these steps:
+
+.NL
+.LI
+Construct the URL of the published statement based on the service name and
+service parameter in the user attribute
+.LI
+Retrieve the published statement from the constructed URL
+.LI
+Verify the fingerprint in the published statement matches the key in question
+.LI
+Verify the signature on the published statement
+.LI
+Confirm that the published statement matches the user attribute packet
+.LE
+
+.NH 1 Trust Implications
+
+.IP
+Consequent to verifying an attestation, it is reasonable to trust that the same
+entity controls both the online account and the keypair in question. Note that
+this trust is several steps removed from a face to face verification, or a
+web-of-trust built on in person verification.
+
+.IP
+Therefore, while a user who has verified an attestation MAY validate the
+attested key, they SHOULD only make a "casual certification" (as described in
+\*(r1). Based only on a verified attestation, a "positive certification" SHOULD
+NOT be made.
+
+.IP
+A key verified via attestation SHOULD NOT be trusted beyond "level 0." In other
+words, an attestation verification SHOULD NOT imply trust in that key to
+certify other keys. That key MAY be used to encrypt and sign communications
+used to direct the recipient to locate other keys that themselves might be
+verified via attestation.
+
+.IP
+If a user has certified another valid, unexpired key with user ID packets that
+match those on an attested key, they MUST NOT replace the other key. The MAY
+maintain records (e.g. keyring entries) for both keys.
+
+.NH 1 Acknowledgments
+.IP
+Acknowledgments go here.
+
+.NH 1 "Security Considerations
+.IP
+The core danger implied by the attestation process is that users will confuse
+the trust levels appropriate for attested keys with the trust levels
+appropriate to in-person verification. In other words, it is very possible that
+users will mistake verification of an online account - even multiple online
+accounts - with meeting a human being face to face.
+
+.IP
+It is important therefore that tools that allow for attestation make this
+distinction clear. For instance, a wrapper for
+.IR GnuPG rgpg
+http://www.gnupg.org/
+.ER
+\& should provide a warning when verifying signatures made with an attested
+key.
+
+.NH 2 Threat Model
+
+.IP
+The guarantees provided by account attestations are at best that the controller
+of a key and the controller of an online account are the same person. There is
+the misleading implication that that person is some particular individual.
+
+.IP
+If the public account is compromised, an attacker could introduce an
+attestation associating a key under their control with the account.
+
+.IP
+If a public account expires and is renewed by an attacker, they could similarly
+introduce such an attestation.
+
+.\" Internationalization considerations
+.NH 1 "Internationalization Considerations
+.IP
+This memo raises no new internationalization considerations.  The presence of this template text indicates that the author/editor has not actually reviewed internationalization considerations.
+.\" IANA considerations
+.NH 1 "IANA Considerations
+.IP
+This memo seeks to add a User Attribute Packet Subtype per \*(r1. We propose a
+type id of 10 be registered with the IANA. Until a consensus on this
+registration is reached, implementations MAY use type 110 in the range set
+aside for experimental use.
+.\" Appendixes
+
+.\" trick to omit content from published RFC (note matching backslash-bracket directive at end of lists)
+.if \nN<0 \{ \
+.\" Another Appendix (reserve space for heading, first paragraph, and first list item)
+.NS 8P
+.AP "Change History"
+.IP
+[[This change history will not be part of a published RFC]]
+.VL
+.LI "inital \-00 version
+.LE \" end of variable item list
+.\}
+.\" End matter
+.EM
